@@ -5,8 +5,9 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 interface WebpageElement {
   id: number;
   element: string;
-  children: string[];
+  children: WebpageElement[];
   innerText: string;
+  styles: string;
 }
 
 interface WebpageHTMLState {
@@ -27,16 +28,11 @@ const webpageHTMLSlice = createSlice({
     ) => {
       state.html.push(action.payload);
     },
-    removeHTMLElement: (
-      state: WebpageHTMLState,
-      action: PayloadAction<number>
-    ) => {
-      state.html = state.html.filter(
-        (element) => element.id !== action.payload
-      );
+    setWebpageHTML(state, action: PayloadAction<WebpageElement[]>) {
+      state.html = action.payload;
     },
   },
 });
 
-export const { addHTMLElement, removeHTMLElement } = webpageHTMLSlice.actions;
+export const { addHTMLElement, setWebpageHTML } = webpageHTMLSlice.actions;
 export default webpageHTMLSlice.reducer;

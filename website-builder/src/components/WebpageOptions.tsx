@@ -13,9 +13,33 @@ const WebpageOptions = () => {
         dispatch(
           addHTMLElement({
             id: 1,
-            element: "<h1/>",
-            children: [],
-            innerText: "Tyler is cool.",
+            element: "<div/>",
+            children: [
+              {
+                id: 84992,
+                element: "<div/>",
+                children: [
+                  {
+                    id: 8313212,
+                    element: "<h1/>",
+                    children: [],
+                    innerText: "Heading 3",
+                    styles: "",
+                  },
+                  {
+                    id: 50,
+                    element: "<h1/>",
+                    children: [],
+                    innerText: "Hello",
+                    styles: "",
+                  },
+                ],
+                innerText: "Heading 2",
+                styles: "",
+              },
+            ],
+            innerText: "Div 1",
+            styles: "",
           })
         );
       },

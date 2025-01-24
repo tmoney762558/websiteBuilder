@@ -7,7 +7,18 @@ interface WebpageElement {
   element: string;
   children: WebpageElement[];
   innerText: string;
-  styles: string;
+  display: string;
+  flexDirection: string;
+  justifyContent: string;
+  alignItems: string;
+  visibility: string;
+  position: string;
+  width: string;
+  height: string;
+  textSize: string;
+  textColor: string;
+  backgroundColor: string;
+  href: string;
 }
 
 interface WebpageHTMLState {

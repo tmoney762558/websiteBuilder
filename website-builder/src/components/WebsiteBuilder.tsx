@@ -1,4 +1,5 @@
 import { useState } from "react";
+import React from "react";
 import { RootState } from "../store";
 import { Navbar, WebpageOptions } from "./";
 import { useDispatch, useSelector } from "react-redux";
@@ -9,7 +10,18 @@ interface WebpageElement {
   element: string;
   children: WebpageElement[];
   innerText: string;
-  styles: string;
+  display: string;
+  flexDirection: string;
+  justifyContent: string;
+  alignItems: string;
+  visibility: string;
+  position: string;
+  width: string;
+  height: string;
+  textSize: string;
+  textColor: string;
+  backgroundColor: string;
+  href: string;
 }
 
 const WebsiteBuilder = () => {
@@ -21,28 +33,141 @@ const WebsiteBuilder = () => {
     null
   );
 
+  const [previousElement, setPreviousElement] = useState<WebpageElement | null>(
+    null
+  );
+
   function determineHTMLElement(element: WebpageElement) {
+    const styles = `${
+      selectedElement === element ? "border-2 border-black" : ""
+    } ${element.display} ${element.flexDirection} ${element.justifyContent} ${element.textColor} ${
+      element.backgroundColor
+    } cursor-pointer`;
     switch (element.element) {
-      case "<h1/>": {
+      case "div": {
+        return (
+          <div
+            className={`${styles} ${
+              element.children.length === 0 ? "w-full h-fit min-h-5" : ""
+            }`}
+            onClick={() => setSelectedElement(element)}
+          >
+            {element.children.map((child, index) => {
+              return (
+                <React.Fragment key={index}>
+                  {determineHTMLElement(child)}
+                </React.Fragment>
+              );
+            })}
+          </div>
+        );
+      }
+      case "nav": {
+        return (
+          <nav
+            className={`${styles} ${
+              element.children.length === 0 ? "w-full h-fit min-h-5" : ""
+            }`}
+            onClick={() => setSelectedElement(element)}
+          >
+            {element.children.map((child, index) => {
+              return (
+                <React.Fragment key={index}>
+                  {determineHTMLElement(child)}
+                </React.Fragment>
+              );
+            })}
+          </nav>
+        );
+      }
+      case "ol": {
+        return (
+          <ol
+            className={`${styles} ${
+              element.children.length === 0 ? "w-full h-fit min-h-5" : ""
+            }`}
+            onClick={() => setSelectedElement(element)}
+          >
+            {element.children.map((child, index) => {
+              return <li key={index}>{determineHTMLElement(child)}</li>;
+            })}
+          </ol>
+        );
+      }
+      case "ul": {
+        return (
+          <ul
+            className={`${styles} ${
+              element.children.length === 0 ? "w-full h-fit min-h-5" : ""
+            }`}
+            onClick={() => setSelectedElement(element)}
+          >
+            {element.children.map((child, index) => {
+              return <li key={index}>{determineHTMLElement(child)}</li>;
+            })}
+          </ul>
+        );
+      }
+      case "h1": {
         return (
           <h1
-            className={element.styles}
+            className={styles}
             onClick={() => {
               setSelectedElement(element); // Selects the element in order to modify it
-              updateStyle("text-4xl");
             }}
           >
             {element.innerText}
           </h1>
         );
       }
-      case "<div/>": {
+      case "h2": {
         return (
-          <div>
-            {element.children.map((child) => {
-              return <>{determineHTMLElement(child)}</>;
-            })}
-          </div>
+          <h2
+            className={styles}
+            onClick={() => {
+              setSelectedElement(element); // Selects the element in order to modify it
+            }}
+          >
+            {element.innerText}
+          </h2>
+        );
+      }
+      case "h3": {
+        return (
+          <h3
+            className={styles}
+            onClick={() => {
+              setSelectedElement(element); // Selects the element in order to modify it
+            }}
+          >
+            {element.innerText}
+          </h3>
+        );
+      }
+      case "p": {
+        return (
+          <p
+            className={styles}
+            onClick={() => {
+              setSelectedElement(element); // Selects the element in order to modify it
+            }}
+          >
+            {element.innerText}
+          </p>
+        );
+      }
+      case "a": {
+        return (
+          <a
+            className={styles}
+            target="_blank"
+            href={element.href}
+            onClick={() => {
+              setSelectedElement(element); // Selects the element in order to modify it
+            }}
+          >
+            {element.innerText}
+          </a>
         );
       }
       default:
@@ -50,13 +175,47 @@ const WebsiteBuilder = () => {
     }
   }
 
-  function updateStyle(newStyle: string) {
+  function updateProperties(propertyToUpdate: string, value: string) {
     let updatedElement;
     if (selectedElement) {
-      updatedElement = { ...selectedElement, styles: newStyle };
+      if (propertyToUpdate === "inner-text") {
+        updatedElement = { ...selectedElement, innerText: value };
+      }
+      if (propertyToUpdate === "display") {
+        updatedElement = { ...selectedElement, display: value };
+      }
+      if (propertyToUpdate === "flex-direction") {
+        updatedElement = { ...selectedElement, flexDirection: value };
+      }
+      if (propertyToUpdate === "justify-content") {
+        updatedElement = { ...selectedElement, justifyContent: value };
+      }
+      if (propertyToUpdate === "background-color") {
+        updatedElement = { ...selectedElement, backgroundColor: value };
+      }
+      if (propertyToUpdate === "text-color") {
+        updatedElement = { ...selectedElement, textColor: value };
+      }
+      if (propertyToUpdate === "href") {
+        updatedElement = { ...selectedElement, href: value };
+      }
+      if (updatedElement) {
+        setSelectedElement(updatedElement);
+        const updatedHTML = updateHTML(updatedElement);
+        dispatch(setWebpageHTML(updatedHTML));
+      }
+    }
+  }
+
+  function updateChildren(newChild: WebpageElement) {
+    let updatedElement;
+
+    if (selectedElement) {
+      const updatedChildren = [...selectedElement.children, newChild];
+      updatedElement = { ...selectedElement, children: updatedChildren };
+      setSelectedElement(updatedElement);
       const updatedHTML = updateHTML(updatedElement);
       dispatch(setWebpageHTML(updatedHTML));
-      console.log(updatedHTML);
     }
   }
 
@@ -67,9 +226,6 @@ const WebsiteBuilder = () => {
   ): WebpageElement[] {
     return children.map((child) => {
       if (child.id === id) {
-        console.log(child.id);
-        console.log("Element found");
-        console.log(updatedElement);
         return updatedElement;
       } else if (child.children.length > 0) {
         const searchResults = searchChildren(
@@ -86,8 +242,6 @@ const WebsiteBuilder = () => {
   function updateHTML(updatedElement: WebpageElement) {
     return webpageHTML.map((element) => {
       if (element.id === updatedElement.id) {
-        console.log("Element found");
-        console.log(updatedElement);
         return updatedElement;
       } else if (element.children.length > 0) {
         const searchResults = searchChildren(
@@ -95,7 +249,7 @@ const WebsiteBuilder = () => {
           updatedElement.id,
           updatedElement
         );
-        return { ...element, children: searchResults}
+        return { ...element, children: searchResults };
       }
       return element;
     });
@@ -107,12 +261,19 @@ const WebsiteBuilder = () => {
       <div className="flex-grow">
         {
           /* Webpage */
-          webpageHTML.map((htmlElement) => (
-            <>{determineHTMLElement(htmlElement)}</>
+          webpageHTML.map((htmlElement, index) => (
+            <React.Fragment key={index}>
+              {determineHTMLElement(htmlElement)}
+            </React.Fragment>
           ))
         }
       </div>
-      <WebpageOptions></WebpageOptions>
+      <WebpageOptions
+        selectedElement={selectedElement}
+        setSelectedElement={setSelectedElement}
+        updateProperties={updateProperties}
+        updateChildren={updateChildren}
+      ></WebpageOptions>
     </div>
   );
 };

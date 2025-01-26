@@ -71,7 +71,6 @@ const DropdownMenu = ({
                   <button
                     onClick={() => {
                       option.callbackFunction();
-                      console.log(selectedElement);
                     }}
                   >
                     {option.name}

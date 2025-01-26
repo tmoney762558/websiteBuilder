@@ -33,16 +33,16 @@ const WebsiteBuilder = () => {
     null
   );
 
-  const [previousElement, setPreviousElement] = useState<WebpageElement | null>(
-    null
-  );
+  const [previousElements, setpreviousElements] = useState<
+    WebpageElement[] | null
+  >([]);
 
   function determineHTMLElement(element: WebpageElement) {
     const styles = `${
       selectedElement === element ? "border-2 border-black" : ""
-    } ${element.display} ${element.flexDirection} ${element.justifyContent} ${element.textColor} ${
-      element.backgroundColor
-    } cursor-pointer`;
+    } ${element.display} ${element.flexDirection} ${element.justifyContent} ${
+      element.textColor
+    } ${element.backgroundColor} cursor-pointer`;
     switch (element.element) {
       case "div": {
         return (
@@ -50,7 +50,10 @@ const WebsiteBuilder = () => {
             className={`${styles} ${
               element.children.length === 0 ? "w-full h-fit min-h-5" : ""
             }`}
-            onClick={() => setSelectedElement(element)}
+            onClick={() => {
+              setSelectedElement(element);
+              setpreviousElements([]);
+            }}
           >
             {element.children.map((child, index) => {
               return (
@@ -68,7 +71,10 @@ const WebsiteBuilder = () => {
             className={`${styles} ${
               element.children.length === 0 ? "w-full h-fit min-h-5" : ""
             }`}
-            onClick={() => setSelectedElement(element)}
+            onClick={() => {
+              setSelectedElement(element);
+              setpreviousElements([]);
+            }}
           >
             {element.children.map((child, index) => {
               return (
@@ -86,7 +92,10 @@ const WebsiteBuilder = () => {
             className={`${styles} ${
               element.children.length === 0 ? "w-full h-fit min-h-5" : ""
             }`}
-            onClick={() => setSelectedElement(element)}
+            onClick={() => {
+              setSelectedElement(element);
+              setpreviousElements([]);
+            }}
           >
             {element.children.map((child, index) => {
               return <li key={index}>{determineHTMLElement(child)}</li>;
@@ -100,7 +109,10 @@ const WebsiteBuilder = () => {
             className={`${styles} ${
               element.children.length === 0 ? "w-full h-fit min-h-5" : ""
             }`}
-            onClick={() => setSelectedElement(element)}
+            onClick={() => {
+              setSelectedElement(element);
+              setpreviousElements([]);
+            }}
           >
             {element.children.map((child, index) => {
               return <li key={index}>{determineHTMLElement(child)}</li>;
@@ -113,7 +125,10 @@ const WebsiteBuilder = () => {
           <h1
             className={styles}
             onClick={() => {
-              setSelectedElement(element); // Selects the element in order to modify it
+              {
+                setSelectedElement(element);
+                setpreviousElements([]);
+              } // Selects the element in order to modify it
             }}
           >
             {element.innerText}
@@ -125,7 +140,10 @@ const WebsiteBuilder = () => {
           <h2
             className={styles}
             onClick={() => {
-              setSelectedElement(element); // Selects the element in order to modify it
+              {
+                setSelectedElement(element);
+                setpreviousElements([]);
+              } // Selects the element in order to modify it
             }}
           >
             {element.innerText}
@@ -137,7 +155,10 @@ const WebsiteBuilder = () => {
           <h3
             className={styles}
             onClick={() => {
-              setSelectedElement(element); // Selects the element in order to modify it
+              {
+                setSelectedElement(element);
+                setpreviousElements([]);
+              } // Selects the element in order to modify it
             }}
           >
             {element.innerText}
@@ -149,7 +170,10 @@ const WebsiteBuilder = () => {
           <p
             className={styles}
             onClick={() => {
-              setSelectedElement(element); // Selects the element in order to modify it
+              {
+                setSelectedElement(element);
+                setpreviousElements([]);
+              } // Selects the element in order to modify it
             }}
           >
             {element.innerText}
@@ -163,7 +187,10 @@ const WebsiteBuilder = () => {
             target="_blank"
             href={element.href}
             onClick={() => {
-              setSelectedElement(element); // Selects the element in order to modify it
+              {
+                setSelectedElement(element);
+                setpreviousElements([]);
+              } // Selects the element in order to modify it
             }}
           >
             {element.innerText}
@@ -176,31 +203,34 @@ const WebsiteBuilder = () => {
   }
 
   function updateProperties(propertyToUpdate: string, value: string) {
-    let updatedElement;
+    let updatedElement: WebpageElement;
     if (selectedElement) {
       if (propertyToUpdate === "inner-text") {
         updatedElement = { ...selectedElement, innerText: value };
-      }
-      if (propertyToUpdate === "display") {
+      } else if (propertyToUpdate === "display") {
         updatedElement = { ...selectedElement, display: value };
-      }
-      if (propertyToUpdate === "flex-direction") {
+      } else if (propertyToUpdate === "flex-direction") {
         updatedElement = { ...selectedElement, flexDirection: value };
-      }
-      if (propertyToUpdate === "justify-content") {
+      } else if (propertyToUpdate === "justify-content") {
         updatedElement = { ...selectedElement, justifyContent: value };
-      }
-      if (propertyToUpdate === "background-color") {
+      } else if (propertyToUpdate === "background-color") {
         updatedElement = { ...selectedElement, backgroundColor: value };
-      }
-      if (propertyToUpdate === "text-color") {
+      } else if (propertyToUpdate === "text-color") {
         updatedElement = { ...selectedElement, textColor: value };
-      }
-      if (propertyToUpdate === "href") {
+      } else if (propertyToUpdate === "href") {
         updatedElement = { ...selectedElement, href: value };
+      } else if (propertyToUpdate === "delete") {
+        updatedElement = { ...selectedElement, element: "delete" };
+      } else {
+        return;
       }
       if (updatedElement) {
-        setSelectedElement(updatedElement);
+        if (propertyToUpdate === "delete") {
+          setSelectedElement(null);
+          setpreviousElements([]);
+        } else {
+          setSelectedElement(updatedElement);
+        }
         const updatedHTML = updateHTML(updatedElement);
         dispatch(setWebpageHTML(updatedHTML));
       }
@@ -208,7 +238,8 @@ const WebsiteBuilder = () => {
   }
 
   function updateChildren(newChild: WebpageElement) {
-    let updatedElement;
+    console.log(previousElements);
+    let updatedElement: WebpageElement;
 
     if (selectedElement) {
       const updatedChildren = [...selectedElement.children, newChild];
@@ -224,35 +255,85 @@ const WebsiteBuilder = () => {
     id: number,
     updatedElement: WebpageElement
   ): WebpageElement[] {
-    return children.map((child) => {
-      if (child.id === id) {
-        return updatedElement;
-      } else if (child.children.length > 0) {
-        const searchResults = searchChildren(
-          child.children,
-          id,
-          updatedElement
-        );
-        return { ...child, children: searchResults };
-      }
-      return child;
-    });
+    if (
+      updatedElement.element === "delete" &&
+      children.find((child) => child.id === updatedElement.id)
+    ) {
+      return children.filter((child) => {
+        if (child.id === updatedElement.id) {
+          return false;
+        } else {
+          return true;
+        }
+      });
+    } else {
+      return children.map((child) => {
+        if (child.id === id) {
+          setpreviousElements(
+            previousElements!.map((element) => {
+              return element.id === id ? updatedElement : element;
+            })
+          );
+          return updatedElement;
+        } else if (child.children.length > 0) {
+          const searchResults = searchChildren(
+            child.children,
+            id,
+            updatedElement
+          );
+          setpreviousElements(
+            previousElements!.map((element) => {
+              return element.id === child.id
+                ? { ...child, children: searchResults }
+                : element;
+            })
+          );
+          return { ...child, children: searchResults };
+        }
+        return child;
+      });
+    }
   }
 
   function updateHTML(updatedElement: WebpageElement) {
-    return webpageHTML.map((element) => {
-      if (element.id === updatedElement.id) {
-        return updatedElement;
-      } else if (element.children.length > 0) {
-        const searchResults = searchChildren(
-          element.children,
-          updatedElement.id,
-          updatedElement
-        );
-        return { ...element, children: searchResults };
-      }
-      return element;
-    });
+    if (
+      updatedElement.element === "delete" &&
+      webpageHTML.find((child) => child.id === updatedElement.id)
+    ) {
+      return webpageHTML.filter((child) => {
+        if (child.id === updatedElement.id) {
+          return false;
+        } else {
+          return true;
+        }
+      });
+    } else {
+      return webpageHTML.map((element) => {
+        if (element.id === updatedElement.id) {
+          setpreviousElements(
+            previousElements!.map((prevElement) => {
+              return prevElement.id === element.id ? updatedElement : element;
+            })
+          );
+          return updatedElement;
+        } else if (element.children.length > 0) {
+          const searchResults = searchChildren(
+            element.children,
+            updatedElement.id,
+            updatedElement
+          );
+          setpreviousElements(
+            previousElements!.map((prevElement) => {
+              return prevElement.id === element.id
+                ? { ...element, children: searchResults }
+                : prevElement;
+            })
+          );
+          return { ...element, children: searchResults };
+        }
+        return element;
+      });
+    }
   }
 
   return (
@@ -273,6 +354,8 @@ const WebsiteBuilder = () => {
         setSelectedElement={setSelectedElement}
         updateProperties={updateProperties}
         updateChildren={updateChildren}
+        previousElements={previousElements}
+        setPreviousElements={setpreviousElements}
       ></WebpageOptions>
     </div>
   );

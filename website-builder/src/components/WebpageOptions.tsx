@@ -29,11 +29,15 @@ const WebpageOptions = ({
   setSelectedElement,
   updateProperties,
   updateChildren,
+  previousElements,
+  setPreviousElements,
 }: {
   selectedElement: WebpageElement | null;
   setSelectedElement: (element: WebpageElement | null) => void;
   updateProperties: (styleToUpdate: string, value: string) => void;
   updateChildren: (newChild: WebpageElement) => void;
+  previousElements: WebpageElement[] | null;
+  setPreviousElements: (element: WebpageElement[] | null) => void;
 }) => {
   const dispatch = useDispatch();
 
@@ -73,8 +77,10 @@ const WebpageOptions = ({
         };
         if (selectedElement === null) {
           dispatch(addHTMLElement(newElement));
+          setPreviousElements([newElement]);
         } else {
           updateChildren(newElement);
+          setPreviousElements([...previousElements!, newElement!]);
         }
         setSelectedElement(newElement);
       },
@@ -105,6 +111,7 @@ const WebpageOptions = ({
         } else {
           updateChildren(newElement);
         }
+        setPreviousElements([...previousElements!, selectedElement!]);
         setSelectedElement(newElement);
       },
     },
@@ -134,6 +141,7 @@ const WebpageOptions = ({
         } else {
           updateChildren(newElement);
         }
+        setPreviousElements([...previousElements!, selectedElement!]);
         setSelectedElement(newElement);
       },
     },
@@ -163,6 +171,7 @@ const WebpageOptions = ({
         } else {
           updateChildren(newElement);
         }
+        setPreviousElements([...previousElements!, selectedElement!]);
         setSelectedElement(newElement);
       },
     },
@@ -519,7 +528,26 @@ const WebpageOptions = ({
       ) : (
         <div>
           <div className="flex justify-between w-full py-2 px-3">
-            <IoMdArrowBack onClick={() => {}}></IoMdArrowBack>
+            {
+              <IoMdArrowBack
+                className={`${
+                  previousElements && previousElements.length < 2
+                    ? "invisible"
+                    : ""
+                } cursor-pointer`}
+                onClick={() => {
+                  console.log(previousElements);
+                  if (previousElements && previousElements.length !== 0) {
+                    setSelectedElement(
+                      previousElements[previousElements!.length - 1]
+                    );
+                    setPreviousElements(
+                      previousElements.slice(0, previousElements!.length - 1)
+                    );
+                  }
+                }}
+              ></IoMdArrowBack>
+            }
             <IoClose
               className="cursor-pointer"
               onClick={() => {
@@ -605,7 +633,9 @@ const WebpageOptions = ({
                     }}
                   ></input>
                   <a href={selectedElement.href} target="_blank">
-                    <button className="px-3 py-1 border-2 border-black">Test Link</button>
+                    <button className="px-3 py-1 border-2 border-black">
+                      Test Link
+                    </button>
                   </a>
                 </div>
               ) : null}
@@ -616,6 +646,10 @@ const WebpageOptions = ({
                         className="max-w-[10rem] mb-1 border-2 border-black cursor-pointer text-lg text-nowrap text-ellipsis overflow-hidden"
                         key={index}
                         onClick={() => {
+                          setPreviousElements([
+                            ...previousElements!,
+                            selectedElement,
+                          ]);
                           setSelectedElement(child);
                         }}
                       >
@@ -625,6 +659,16 @@ const WebpageOptions = ({
                   : "No Children"
                 : null}
             </ul>
+            <li>
+              <button
+                className="px-3 py-1 border-2 border-black"
+                onClick={() => {
+                  updateProperties("delete", "");
+                }}
+              >
+                Delete
+              </button>
+            </li>
           </ul>
         </div>
       )}

@@ -31,13 +31,15 @@ const WebpageOptions = ({
   updateChildren,
   previousElements,
   setPreviousElements,
+  webpageHTML,
 }: {
   selectedElement: WebpageElement | null;
   setSelectedElement: (element: WebpageElement | null) => void;
   updateProperties: (styleToUpdate: string, value: string) => void;
   updateChildren: (newChild: WebpageElement) => void;
-  previousElements: WebpageElement[] | null;
-  setPreviousElements: (element: WebpageElement[] | null) => void;
+  previousElements: number[];
+  setPreviousElements: (element: number[]) => void;
+  webpageHTML: WebpageElement[];
 }) => {
   const dispatch = useDispatch();
 
@@ -48,6 +50,24 @@ const WebpageOptions = ({
       innerTextInput.current.value = selectedElement.innerText;
     }
   }, [selectedElement]);
+
+  const findElementById = (
+    elements: WebpageElement[],
+    id: number
+  ): WebpageElement | null => {
+    for (let i: number = 0; i < elements.length; i++) {
+      if (elements[i].id === id) {
+        return elements[i];
+      }
+      if (elements[i].children) {
+        const found = findElementById(elements[i].children, id);
+        if (found) {
+          return found;
+        }
+      }
+    }
+    return null;
+  };
 
   /* DROPDOWN OPTIONS */
 
@@ -77,10 +97,10 @@ const WebpageOptions = ({
         };
         if (selectedElement === null) {
           dispatch(addHTMLElement(newElement));
-          setPreviousElements([newElement]);
+          setPreviousElements([newElement.id]);
         } else {
           updateChildren(newElement);
-          setPreviousElements([...previousElements!, newElement!]);
+          setPreviousElements([...previousElements, selectedElement!.id]);
         }
         setSelectedElement(newElement);
       },
@@ -108,10 +128,11 @@ const WebpageOptions = ({
         };
         if (selectedElement === null) {
           dispatch(addHTMLElement(newElement));
+          setPreviousElements([newElement.id]);
         } else {
           updateChildren(newElement);
+          setPreviousElements([...previousElements, selectedElement!.id]);
         }
-        setPreviousElements([...previousElements!, selectedElement!]);
         setSelectedElement(newElement);
       },
     },
@@ -138,10 +159,11 @@ const WebpageOptions = ({
         };
         if (selectedElement === null) {
           dispatch(addHTMLElement(newElement));
+          setPreviousElements([newElement.id]);
         } else {
           updateChildren(newElement);
+          setPreviousElements([...previousElements, selectedElement!.id]);
         }
-        setPreviousElements([...previousElements!, selectedElement!]);
         setSelectedElement(newElement);
       },
     },
@@ -168,10 +190,11 @@ const WebpageOptions = ({
         };
         if (selectedElement === null) {
           dispatch(addHTMLElement(newElement));
+          setPreviousElements([newElement.id]);
         } else {
           updateChildren(newElement);
+          setPreviousElements([...previousElements, selectedElement!.id]);
         }
-        setPreviousElements([...previousElements!, selectedElement!]);
         setSelectedElement(newElement);
       },
     },
@@ -528,30 +551,29 @@ const WebpageOptions = ({
       ) : (
         <div>
           <div className="flex justify-between w-full py-2 px-3">
-            {
-              <IoMdArrowBack
-                className={`${
-                  previousElements && previousElements.length < 2
-                    ? "invisible"
-                    : ""
-                } cursor-pointer`}
-                onClick={() => {
-                  console.log(previousElements);
-                  if (previousElements && previousElements.length !== 0) {
-                    setSelectedElement(
-                      previousElements[previousElements!.length - 1]
-                    );
-                    setPreviousElements(
-                      previousElements.slice(0, previousElements!.length - 1)
-                    );
-                  }
-                }}
-              ></IoMdArrowBack>
-            }
+            <IoMdArrowBack
+              className={`${
+                previousElements && previousElements.length <= 1
+                  ? "invisible"
+                  : ""
+              } cursor-pointer`}
+              onClick={() => {
+                setSelectedElement(
+                  findElementById(
+                    webpageHTML,
+                    previousElements[previousElements.length - 2]
+                  )
+                );
+                setPreviousElements(
+                  previousElements.slice(0, previousElements!.length - 1)
+                );
+              }}
+            />
             <IoClose
               className="cursor-pointer"
               onClick={() => {
                 setSelectedElement(null);
+                setPreviousElements([]);
               }}
             ></IoClose>
           </div>
@@ -648,7 +670,7 @@ const WebpageOptions = ({
                         onClick={() => {
                           setPreviousElements([
                             ...previousElements!,
-                            selectedElement,
+                            selectedElement.id,
                           ]);
                           setSelectedElement(child);
                         }}

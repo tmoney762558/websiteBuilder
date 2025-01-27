@@ -33,9 +33,7 @@ const WebsiteBuilder = () => {
     null
   );
 
-  const [previousElements, setpreviousElements] = useState<
-    WebpageElement[] | null
-  >([]);
+  const [previousElements, setpreviousElements] = useState<number[]>([]);
 
   function determineHTMLElement(element: WebpageElement) {
     const styles = `${
@@ -52,7 +50,7 @@ const WebsiteBuilder = () => {
             }`}
             onClick={() => {
               setSelectedElement(element);
-              setpreviousElements([]);
+              setpreviousElements([element.id]);
             }}
           >
             {element.children.map((child, index) => {
@@ -73,7 +71,7 @@ const WebsiteBuilder = () => {
             }`}
             onClick={() => {
               setSelectedElement(element);
-              setpreviousElements([]);
+              setpreviousElements([element.id]);
             }}
           >
             {element.children.map((child, index) => {
@@ -94,7 +92,7 @@ const WebsiteBuilder = () => {
             }`}
             onClick={() => {
               setSelectedElement(element);
-              setpreviousElements([]);
+              setpreviousElements([element.id]);
             }}
           >
             {element.children.map((child, index) => {
@@ -127,7 +125,7 @@ const WebsiteBuilder = () => {
             onClick={() => {
               {
                 setSelectedElement(element);
-                setpreviousElements([]);
+                setpreviousElements([element.id]);
               } // Selects the element in order to modify it
             }}
           >
@@ -142,7 +140,7 @@ const WebsiteBuilder = () => {
             onClick={() => {
               {
                 setSelectedElement(element);
-                setpreviousElements([]);
+                setpreviousElements([element.id]);
               } // Selects the element in order to modify it
             }}
           >
@@ -157,7 +155,7 @@ const WebsiteBuilder = () => {
             onClick={() => {
               {
                 setSelectedElement(element);
-                setpreviousElements([]);
+                setpreviousElements([element.id]);
               } // Selects the element in order to modify it
             }}
           >
@@ -172,7 +170,7 @@ const WebsiteBuilder = () => {
             onClick={() => {
               {
                 setSelectedElement(element);
-                setpreviousElements([]);
+                setpreviousElements([element.id]);
               } // Selects the element in order to modify it
             }}
           >
@@ -189,7 +187,7 @@ const WebsiteBuilder = () => {
             onClick={() => {
               {
                 setSelectedElement(element);
-                setpreviousElements([]);
+                setpreviousElements([element.id]);
               } // Selects the element in order to modify it
             }}
           >
@@ -238,7 +236,6 @@ const WebsiteBuilder = () => {
   }
 
   function updateChildren(newChild: WebpageElement) {
-    console.log(previousElements);
     let updatedElement: WebpageElement;
 
     if (selectedElement) {
@@ -269,24 +266,12 @@ const WebsiteBuilder = () => {
     } else {
       return children.map((child) => {
         if (child.id === id) {
-          setpreviousElements(
-            previousElements!.map((element) => {
-              return element.id === id ? updatedElement : element;
-            })
-          );
           return updatedElement;
         } else if (child.children.length > 0) {
           const searchResults = searchChildren(
             child.children,
             id,
             updatedElement
-          );
-          setpreviousElements(
-            previousElements!.map((element) => {
-              return element.id === child.id
-                ? { ...child, children: searchResults }
-                : element;
-            })
           );
           return { ...child, children: searchResults };
         }
@@ -310,24 +295,12 @@ const WebsiteBuilder = () => {
     } else {
       return webpageHTML.map((element) => {
         if (element.id === updatedElement.id) {
-          setpreviousElements(
-            previousElements!.map((prevElement) => {
-              return prevElement.id === element.id ? updatedElement : element;
-            })
-          );
           return updatedElement;
         } else if (element.children.length > 0) {
           const searchResults = searchChildren(
             element.children,
             updatedElement.id,
             updatedElement
-          );
-          setpreviousElements(
-            previousElements!.map((prevElement) => {
-              return prevElement.id === element.id
-                ? { ...element, children: searchResults }
-                : prevElement;
-            })
           );
           return { ...element, children: searchResults };
         }
@@ -356,6 +329,7 @@ const WebsiteBuilder = () => {
         updateChildren={updateChildren}
         previousElements={previousElements}
         setPreviousElements={setpreviousElements}
+        webpageHTML={webpageHTML}
       ></WebpageOptions>
     </div>
   );

@@ -32,6 +32,7 @@ const WebpageOptions = ({
   previousElements,
   setPreviousElements,
   webpageHTML,
+  webpageRef,
 }: {
   selectedElement: WebpageElement | null;
   setSelectedElement: (element: WebpageElement | null) => void;
@@ -40,6 +41,7 @@ const WebpageOptions = ({
   previousElements: number[];
   setPreviousElements: (element: number[]) => void;
   webpageHTML: WebpageElement[];
+  webpageRef: React.RefObject<HTMLDivElement>;
 }) => {
   const dispatch = useDispatch();
 
@@ -525,7 +527,7 @@ const WebpageOptions = ({
   ];
 
   return (
-    <div className="w-[15rem] sticky h-screen overflow-y-scroll border-l-2 border-black">
+    <div className="w-[15rem] sticky top-0 right-0 h-screen overflow-y-scroll border-l-2 border-black">
       {selectedElement === null ? (
         <ul className="flex flex-col w-full items-center gap-2 p-5">
           <li className="text-lg">Editor</li>
@@ -547,6 +549,7 @@ const WebpageOptions = ({
             dropdownOptions={htmlElements}
             selectedElement={selectedElement}
           ></DropdownMenu>
+          <button onClick={() => {navigator.clipboard.writeText(webpageRef!.current!.innerHTML)}} className="border-2 border-black">Export HTML</button>
         </ul>
       ) : (
         <div>

@@ -3,7 +3,7 @@ import { Navbar } from "./";
 
 const Dashboard = () => {
   return (
-    <div className="flex w-full h-screen">
+    <div className="flex">
       <Navbar></Navbar>
       <div className="flex flex-col flex-grow w-full items-center">
         <button className="w-full max-w-[15rem] mt-[8.5rem] py-2 rounded-full border-2 border-black text-lg font-bold shadow-lg">

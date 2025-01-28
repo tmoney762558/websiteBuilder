@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import React from "react";
 import { RootState } from "../store";
 import { Navbar, WebpageOptions } from "./";
@@ -35,18 +35,22 @@ const WebsiteBuilder = () => {
 
   const [previousElements, setpreviousElements] = useState<number[]>([]);
 
+  const webpageRef = useRef<HTMLDivElement>(null);
+
   function determineHTMLElement(element: WebpageElement) {
-    const styles = `${
-      selectedElement === element ? "border-2 border-black" : ""
-    } ${element.display} ${element.flexDirection} ${element.justifyContent} ${
-      element.textColor
-    } ${element.backgroundColor} cursor-pointer`;
+    const styles = `cursor-pointer${
+      selectedElement === element ? " border-2 border-black" : ""
+    }${element.display !== "" ? " " + element.display : ""}${
+      element.flexDirection !== "" ? " " + element.flexDirection : ""
+    }${element.justifyContent !== "" ? " " + element.justifyContent : ""}${
+      element.textColor !== "" ? " " + element.textColor : ""
+    }${element.backgroundColor !== "" ? " " + element.backgroundColor : ""}`;
     switch (element.element) {
       case "div": {
         return (
           <div
-            className={`${styles} ${
-              element.children.length === 0 ? "w-full h-fit min-h-5" : ""
+            className={`${styles}${
+              element.children.length === 0 ? " w-full h-fit min-h-5" : ""
             }`}
             onClick={() => {
               setSelectedElement(element);
@@ -66,8 +70,8 @@ const WebsiteBuilder = () => {
       case "nav": {
         return (
           <nav
-            className={`${styles} ${
-              element.children.length === 0 ? "w-full h-fit min-h-5" : ""
+            className={`${styles}${
+              element.children.length === 0 ? " w-full h-fit min-h-5" : ""
             }`}
             onClick={() => {
               setSelectedElement(element);
@@ -87,8 +91,8 @@ const WebsiteBuilder = () => {
       case "ol": {
         return (
           <ol
-            className={`${styles} ${
-              element.children.length === 0 ? "w-full h-fit min-h-5" : ""
+            className={`${styles}${
+              element.children.length === 0 ? " w-full h-fit min-h-5" : ""
             }`}
             onClick={() => {
               setSelectedElement(element);
@@ -104,8 +108,8 @@ const WebsiteBuilder = () => {
       case "ul": {
         return (
           <ul
-            className={`${styles} ${
-              element.children.length === 0 ? "w-full h-fit min-h-5" : ""
+            className={`${styles}${
+              element.children.length === 0 ? " w-full h-fit min-h-5" : ""
             }`}
             onClick={() => {
               setSelectedElement(element);
@@ -312,7 +316,7 @@ const WebsiteBuilder = () => {
   return (
     <div className="flex">
       <Navbar></Navbar>
-      <div className="flex-grow">
+      <div ref={webpageRef} className="flex-grow">
         {
           /* Webpage */
           webpageHTML.map((htmlElement, index) => (
@@ -330,6 +334,7 @@ const WebsiteBuilder = () => {
         previousElements={previousElements}
         setPreviousElements={setpreviousElements}
         webpageHTML={webpageHTML}
+        webpageRef={webpageRef}
       ></WebpageOptions>
     </div>
   );

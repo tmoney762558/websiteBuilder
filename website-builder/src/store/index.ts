@@ -1,10 +1,12 @@
 import { configureStore } from "@reduxjs/toolkit";
 import webpageHTMLReducer from "./slices/webpageHTMLSlice";
+import webpageReducer from "./slices/webpageSlice";
 
 const store = configureStore({
   reducer: {
     // Add reducers here
     webpageHTML: webpageHTMLReducer,
+    webpage: webpageReducer,
   },
 });
 

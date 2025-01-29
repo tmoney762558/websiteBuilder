@@ -1,9 +1,15 @@
 import { IoClose } from "react-icons/io5";
 import { addHTMLElement } from "../store/slices/webpageHTMLSlice";
 import { DropdownMenu } from "./";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useRef } from "react";
 import { IoMdArrowBack } from "react-icons/io";
+import { FaRegSave } from "react-icons/fa";
+import { useParams } from "react-router-dom";
+import {
+  addWebpage,
+  updateWebpage,
+} from "../store/slices/webpageSlice";
 
 interface WebpageElement {
   id: number;
@@ -24,6 +30,16 @@ interface WebpageElement {
   href: string;
 }
 
+interface Webpage {
+  id: number;
+  name: string;
+  webpage: WebpageElement[];
+}
+
+interface WebpageState {
+  webpages: { webpages: Webpage[] };
+}
+
 const WebpageOptions = ({
   selectedElement,
   setSelectedElement,
@@ -33,6 +49,7 @@ const WebpageOptions = ({
   setPreviousElements,
   webpageHTML,
   webpageRef,
+  setShowExportMessage,
 }: {
   selectedElement: WebpageElement | null;
   setSelectedElement: (element: WebpageElement | null) => void;
@@ -42,10 +59,18 @@ const WebpageOptions = ({
   setPreviousElements: (element: number[]) => void;
   webpageHTML: WebpageElement[];
   webpageRef: React.RefObject<HTMLDivElement>;
+  setShowExportMessage: (value: boolean) => void;
 }) => {
+  const  { id } = useParams<{ id: string }>(); // Gets webpage id from URL
+  const currentId: number = Number(id); // Converts id to number
+
   const dispatch = useDispatch();
 
   const innerTextInput = useRef<HTMLTextAreaElement>(null);
+
+  const webpages = useSelector(
+    (state: WebpageState) => state.webpages
+  );
 
   useEffect(() => {
     if (innerTextInput && innerTextInput.current && selectedElement) {
@@ -530,6 +555,25 @@ const WebpageOptions = ({
     <div className="w-[15rem] sticky top-0 right-0 h-screen overflow-y-scroll border-l-2 border-black">
       {selectedElement === null ? (
         <ul className="flex flex-col w-full items-center gap-2 p-5">
+          <li className="flex justify-end w-full py-2 px-3">
+            <FaRegSave
+              className="cursor-pointer"
+              onClick={() => {
+                if (webpages && webpages.webpages.find((webpage) => webpage.id === currentId)) {
+                  dispatch(
+                    updateWebpage({
+                      id: currentId,
+                      name: "Webpage",
+                      webpage: webpageHTML,
+                    })
+                  );
+                } else {
+                  dispatch(addWebpage({ id: currentId, name: "Webpage", webpage: webpageHTML }));
+                }
+              }}
+              fontSize={"1.3rem"}
+            ></FaRegSave>
+          </li>
           <li className="text-lg">Editor</li>
           <DropdownMenu
             type="HTML Elements / Styles"
@@ -549,7 +593,15 @@ const WebpageOptions = ({
             dropdownOptions={htmlElements}
             selectedElement={selectedElement}
           ></DropdownMenu>
-          <button onClick={() => {navigator.clipboard.writeText(webpageRef!.current!.innerHTML)}} className="border-2 border-black">Export HTML</button>
+          <button
+            onClick={() => {
+              navigator.clipboard.writeText(webpageRef!.current!.innerHTML);
+              setShowExportMessage(true);
+            }}
+            className="border-2 border-black"
+          >
+            Export HTML
+          </button>
         </ul>
       ) : (
         <div>

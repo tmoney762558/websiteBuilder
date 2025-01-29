@@ -8,7 +8,7 @@ const Navbar = () => {
         <li className="my-10">
           <ul>
             <li>
-              <h3>Home</h3>
+              <h3 className="border-2 border-black">Home</h3>
             </li>
           </ul>
         </li>

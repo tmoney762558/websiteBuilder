@@ -6,7 +6,7 @@ const App = () => {
     <Router>
       <Routes>
         <Route path="/" element={<Dashboard />}></Route>
-        <Route path="/new-webpage" element={<WebsiteBuilder />}></Route>
+        <Route path="/webpage/:id" element={<WebsiteBuilder />}></Route>
       </Routes>
     </Router>
   );

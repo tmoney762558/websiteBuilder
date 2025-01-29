@@ -4,6 +4,7 @@ import { RootState } from "../store";
 import { Navbar, WebpageOptions } from "./";
 import { useDispatch, useSelector } from "react-redux";
 import { setWebpageHTML } from "../store/slices/webpageHTMLSlice";
+import { CiCircleCheck } from "react-icons/ci";
 
 interface WebpageElement {
   id: number;
@@ -34,6 +35,9 @@ const WebsiteBuilder = () => {
   );
 
   const [previousElements, setpreviousElements] = useState<number[]>([]);
+
+  const [showExportMessage, setShowExportMessage] = useState<boolean>(false);
+  const [slidingIn, setSlidingIn] = useState<boolean>(false); // Determines the action of the export message's animation
 
   const webpageRef = useRef<HTMLDivElement>(null);
 
@@ -314,7 +318,24 @@ const WebsiteBuilder = () => {
   }
 
   return (
-    <div className="flex">
+    <div className="flex justify-center relative">
+      {showExportMessage ? (
+        <div
+          className={`flex items-center gap-3 absolute top-5 w-fit px-5 py-2 border-2 border-black text-center ${slidingIn ? "slide-in-top" : "fade-out"}`}
+          onAnimationEnd={() => {
+            if (slidingIn) {
+              setSlidingIn(false);
+            }
+            else {
+              setSlidingIn(true);
+              setShowExportMessage(false);
+            }
+          }}
+        >
+          <p>Successfully Exported HTML</p>
+          <CiCircleCheck fill="green" fontSize={"2rem"}></CiCircleCheck>
+        </div>
+      ) : null}
       <Navbar></Navbar>
       <div ref={webpageRef} className="flex-grow">
         {
@@ -335,6 +356,7 @@ const WebsiteBuilder = () => {
         setPreviousElements={setpreviousElements}
         webpageHTML={webpageHTML}
         webpageRef={webpageRef}
+        setShowExportMessage={setShowExportMessage}
       ></WebpageOptions>
     </div>
   );

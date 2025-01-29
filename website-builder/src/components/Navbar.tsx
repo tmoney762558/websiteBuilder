@@ -1,3 +1,5 @@
+import { NavLink } from "react-router-dom";
+
 const Navbar = () => {
   return (
     <nav className="w-[10rem] sticky top-0 left-0 h-screen border-r-2 border-black">
@@ -8,7 +10,9 @@ const Navbar = () => {
         <li className="my-10">
           <ul>
             <li>
-              <h3 className="border-2 border-black">Home</h3>
+              <NavLink to="/">
+                <h3 className="border-2 border-black">Home</h3>
+              </NavLink>
             </li>
           </ul>
         </li>

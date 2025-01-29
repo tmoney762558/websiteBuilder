@@ -42,8 +42,14 @@ const webpageHTMLSlice = createSlice({
     setWebpageHTML(state, action: PayloadAction<WebpageElement[]>) {
       state.html = action.payload;
     },
+    resetWebpageHTML: (state: WebpageHTMLState) => {
+      {
+        state.html = [];
+      }
+    },
   },
 });
 
-export const { addHTMLElement, setWebpageHTML } = webpageHTMLSlice.actions;
+export const { addHTMLElement, setWebpageHTML, resetWebpageHTML } =
+  webpageHTMLSlice.actions;
 export default webpageHTMLSlice.reducer;

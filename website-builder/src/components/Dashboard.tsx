@@ -1,38 +1,10 @@
 import { NavLink } from "react-router-dom";
 import { Navbar } from "./";
 import { useSelector } from "react-redux";
-
-interface WebpageElement {
-  id: number;
-  element: string;
-  children: WebpageElement[];
-  innerText: string;
-  display: string;
-  flexDirection: string;
-  justifyContent: string;
-  alignItems: string;
-  visibility: string;
-  position: string;
-  width: string;
-  height: string;
-  textSize: string;
-  textColor: string;
-  backgroundColor: string;
-  href: string;
-}
-
-interface Webpage {
-  id: number;
-  name: string;
-  webpage: WebpageElement[];
-}
-
-interface WebpageState {
-  webpages: { webpages: Webpage[] };
-}
+import { RootState } from "../store";
 
 const Dashboard = () => {
-  const webpages = useSelector((state: WebpageState) => state.webpages);
+  const webpages = useSelector((state: RootState) => state.webpage.webpages);
 
   return (
     <div className="flex">
@@ -43,8 +15,10 @@ const Dashboard = () => {
           }}>Create New Website</NavLink>
         </button>
         <div className="grid xl:grid-cols-3 lg:grid-cols-2 grid-cols-1 justify-center gap-7 w-full max-w-[100rem] mt-[5rem] px-10">
-          {webpages ? webpages.webpages.map((webpage) => (
-            <NavLink to={`/webpages/${webpage.id}`} key={webpage.id}></NavLink>
+          {webpages ? webpages.map((webpage) => (
+            <NavLink to={`/webpage/${webpage.id}`} key={webpage.id}>
+              <div><p>{webpage.name}</p></div>
+            </NavLink>
           )) : null}
         </div>
       </div>

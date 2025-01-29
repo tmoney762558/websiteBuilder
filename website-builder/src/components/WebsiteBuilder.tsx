@@ -1,10 +1,11 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import React from "react";
 import { RootState } from "../store";
 import { Navbar, WebpageOptions } from "./";
 import { useDispatch, useSelector } from "react-redux";
 import { setWebpageHTML } from "../store/slices/webpageHTMLSlice";
 import { CiCircleCheck } from "react-icons/ci";
+import { useParams } from "react-router-dom";
 
 interface WebpageElement {
   id: number;
@@ -28,6 +29,12 @@ interface WebpageElement {
 const WebsiteBuilder = () => {
   const dispatch = useDispatch();
 
+  const { id } = useParams<{ id: string }>(); // Gets webpage id from URL
+  const currentId: number = Number(id); // Converts id to number
+
+  const webpages = useSelector((state: RootState) => state.webpage.webpages);
+  const currentWebpage = webpages.find((webpage) => webpage.id === currentId);
+
   const webpageHTML = useSelector((state: RootState) => state.webpageHTML.html);
 
   const [selectedElement, setSelectedElement] = useState<WebpageElement | null>(
@@ -40,6 +47,17 @@ const WebsiteBuilder = () => {
   const [slidingIn, setSlidingIn] = useState<boolean>(false); // Determines the action of the export message's animation
 
   const webpageRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (currentWebpage) {
+      if (currentWebpage.webpage.length > 0) {
+        dispatch(setWebpageHTML(currentWebpage.webpage));
+      }
+    }
+    else {
+      dispatch(setWebpageHTML([]));
+    }
+  }, [currentWebpage, dispatch]);
 
   function determineHTMLElement(element: WebpageElement) {
     const styles = `cursor-pointer${

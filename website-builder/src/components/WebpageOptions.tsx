@@ -6,10 +6,8 @@ import { useEffect, useRef } from "react";
 import { IoMdArrowBack } from "react-icons/io";
 import { FaRegSave } from "react-icons/fa";
 import { useParams } from "react-router-dom";
-import {
-  addWebpage,
-  updateWebpage,
-} from "../store/slices/webpageSlice";
+import { addWebpage, updateWebpage } from "../store/slices/webpageSlice";
+import { RootState } from "../store";
 
 interface WebpageElement {
   id: number;
@@ -28,16 +26,6 @@ interface WebpageElement {
   textColor: string;
   backgroundColor: string;
   href: string;
-}
-
-interface Webpage {
-  id: number;
-  name: string;
-  webpage: WebpageElement[];
-}
-
-interface WebpageState {
-  webpages: { webpages: Webpage[] };
 }
 
 const WebpageOptions = ({
@@ -61,16 +49,14 @@ const WebpageOptions = ({
   webpageRef: React.RefObject<HTMLDivElement>;
   setShowExportMessage: (value: boolean) => void;
 }) => {
-  const  { id } = useParams<{ id: string }>(); // Gets webpage id from URL
+  const { id } = useParams<{ id: string }>(); // Gets webpage id from URL
   const currentId: number = Number(id); // Converts id to number
 
   const dispatch = useDispatch();
 
   const innerTextInput = useRef<HTMLTextAreaElement>(null);
 
-  const webpages = useSelector(
-    (state: WebpageState) => state.webpages
-  );
+  const webpages = useSelector((state: RootState) => state.webpage.webpages);
 
   useEffect(() => {
     if (innerTextInput && innerTextInput.current && selectedElement) {
@@ -94,6 +80,15 @@ const WebpageOptions = ({
       }
     }
     return null;
+  };
+
+  const doesWebpageExist = (id: number): boolean => {
+    for (let i: number = 0; i < webpages.length; i++) {
+      if (webpages[i].id === id) {
+        return true;
+      }
+    }
+    return false;
   };
 
   /* DROPDOWN OPTIONS */
@@ -559,7 +554,9 @@ const WebpageOptions = ({
             <FaRegSave
               className="cursor-pointer"
               onClick={() => {
-                if (webpages && webpages.webpages.find((webpage) => webpage.id === currentId)) {
+                console.log(currentId);
+                if (doesWebpageExist(currentId)) {
+                  console.log("Updating webpage");
                   dispatch(
                     updateWebpage({
                       id: currentId,
@@ -568,7 +565,13 @@ const WebpageOptions = ({
                     })
                   );
                 } else {
-                  dispatch(addWebpage({ id: currentId, name: "Webpage", webpage: webpageHTML }));
+                  dispatch(
+                    addWebpage({
+                      id: currentId,
+                      name: "Webpage",
+                      webpage: webpageHTML,
+                    })
+                  );
                 }
               }}
               fontSize={"1.3rem"}

@@ -26,13 +26,11 @@ interface Webpage {
 }
 
 interface WebpageState {
-  webpages: {
     webpages: Webpage[];
-  };
 }
 
 const initialState: WebpageState = {
-  webpages: { webpages: [] },
+  webpages: [],
 };
 
 const webpageSlice = createSlice({
@@ -41,18 +39,20 @@ const webpageSlice = createSlice({
   reducers: {
     addWebpage: (state: WebpageState, action: PayloadAction<Webpage>) => {
       // Adds webpage to the saved webpages
-      state.webpages.webpages.push(action.payload);
+      state.webpages.push(action.payload);
     },
     removeWebpage: (state: WebpageState, action: PayloadAction<number>) => {
       // Removes webpage using an id
-      state.webpages.webpages.filter(
+      state.webpages.filter(
         (webpage) => webpage.id !== action.payload
       );
     },
     updateWebpage: (state: WebpageState, action: PayloadAction<Webpage>) => {
-      state.webpages.webpages.map((webpage) =>
+      // Updates a specific webpage using an id
+      const newState = state.webpages.map((webpage) =>
         webpage.id === action.payload.id ? action.payload : webpage
       );
+      state.webpages = newState;
     },
   },
 });

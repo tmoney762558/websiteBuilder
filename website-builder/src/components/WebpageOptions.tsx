@@ -2,12 +2,13 @@ import { IoClose } from "react-icons/io5";
 import { addHTMLElement } from "../store/slices/webpageHTMLSlice";
 import { DropdownMenu } from "./";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { IoMdArrowBack } from "react-icons/io";
-import { FaRegSave } from "react-icons/fa";
+import { FaQuestionCircle, FaRegSave } from "react-icons/fa";
 import { useParams } from "react-router-dom";
 import { addWebpage, updateWebpage } from "../store/slices/webpageSlice";
 import { RootState } from "../store";
+import { FaChildren } from "react-icons/fa6";
 
 interface WebpageElement {
   id: number;
@@ -38,6 +39,7 @@ const WebpageOptions = ({
   webpageHTML,
   webpageRef,
   setShowExportMessage,
+  setShowSaveMessage,
 }: {
   selectedElement: WebpageElement | null;
   setSelectedElement: (element: WebpageElement | null) => void;
@@ -48,6 +50,7 @@ const WebpageOptions = ({
   webpageHTML: WebpageElement[];
   webpageRef: React.RefObject<HTMLDivElement>;
   setShowExportMessage: (value: boolean) => void;
+  setShowSaveMessage: (value: boolean) => void;
 }) => {
   const { id } = useParams<{ id: string }>(); // Gets webpage id from URL
   const currentId: number = Number(id); // Converts id to number
@@ -56,7 +59,10 @@ const WebpageOptions = ({
 
   const innerTextInput = useRef<HTMLTextAreaElement>(null);
 
+  const [webpageName, setWebpageName] = useState<string>("Website");
+  const [webpageColor, setWebpageColor] = useState<string>("#FFFFFF");
   const webpages = useSelector((state: RootState) => state.webpage.webpages);
+  const currentWebpage = webpages.find((webpage) => webpage.id === currentId);
 
   useEffect(() => {
     if (innerTextInput && innerTextInput.current && selectedElement) {
@@ -547,29 +553,30 @@ const WebpageOptions = ({
   ];
 
   return (
-    <div className="w-[15rem] sticky top-0 right-0 h-screen overflow-y-scroll border-l-2 border-black">
+    <div className="w-[20rem] sticky top-0 right-0 h-screen overflow-y-scroll bg-black text-white font-roboto">
       {selectedElement === null ? (
         <ul className="flex flex-col w-full items-center gap-2 p-5">
           <li className="flex justify-end w-full py-2 px-3">
             <FaRegSave
               className="cursor-pointer"
               onClick={() => {
-                console.log(currentId);
+                setShowSaveMessage(true);
                 if (doesWebpageExist(currentId)) {
-                  console.log("Updating webpage");
                   dispatch(
                     updateWebpage({
                       id: currentId,
-                      name: "Webpage",
+                      name: webpageName,
                       webpage: webpageHTML,
+                      color: webpageColor,
                     })
                   );
                 } else {
                   dispatch(
                     addWebpage({
                       id: currentId,
-                      name: "Webpage",
+                      name: webpageName,
                       webpage: webpageHTML,
+                      color: webpageColor,
                     })
                   );
                 }
@@ -578,6 +585,18 @@ const WebpageOptions = ({
             ></FaRegSave>
           </li>
           <li className="text-lg">Editor</li>
+          <li className="flex flex-col items-center w-full my-5">
+            <label>Website Name:</label>
+            <input
+              className="w-[95%] mt-3 px-2 py-1 bg-neutral-800 rounded-full outline-none"
+              type="text"
+              placeholder="Website Name"
+              defaultValue={currentWebpage ? currentWebpage.name : "Website"}
+              onChange={(e) => {
+                setWebpageName(e.target.value);
+              }}
+            ></input>
+          </li>
           <DropdownMenu
             type="HTML Elements / Styles"
             name="Containers"
@@ -596,12 +615,31 @@ const WebpageOptions = ({
             dropdownOptions={htmlElements}
             selectedElement={selectedElement}
           ></DropdownMenu>
+          <div className="flex flex-col items-center">
+            <div className="flex items-center gap-3">
+              <h3>Card Color</h3>
+              <FaQuestionCircle
+                className="cursor-pointer"
+                title="Changes the color of the website card within the dashboard."
+              ></FaQuestionCircle>
+            </div>
+            <input
+              className="w-7 h-7"
+              type="color"
+              defaultValue={
+                webpages.length > 0 && currentWebpage
+                  ? currentWebpage.color
+                  : "#FFFFFF"
+              }
+              onChange={(e) => setWebpageColor(e.target.value)}
+            />
+          </div>
           <button
             onClick={() => {
               navigator.clipboard.writeText(webpageRef!.current!.innerHTML);
               setShowExportMessage(true);
             }}
-            className="border-2 border-black"
+            className=" mt-3 px-3 py-1 border-2 border-white"
           >
             Export HTML
           </button>
@@ -689,59 +727,69 @@ const WebpageOptions = ({
               dropdownOptions={backgroundColors}
               selectedElement={selectedElement}
             ></DropdownMenu>
-            <li>
-              <h2 className="text-lg">InnerText</h2>
-            </li>
-            <textarea
-              ref={innerTextInput}
-              className="border-2 border-black outline-none p-3"
-              onChange={(e) => {
-                updateProperties("inner-text", e.target.value);
-              }}
-            ></textarea>
-            <ul>
-              <li className="text-center mb-3">
-                <h2>Children</h2>
+            {selectedElement.element !== "div" &&
+            selectedElement.element !== "nav" &&
+            selectedElement.element !== "ol" &&
+            selectedElement.element !== "ul" ? (
+              <li>
+                <h2 className="text-lg">InnerText</h2>
+                <textarea
+                  ref={innerTextInput}
+                  className="max-w-[95%] p-3 bg-neutral-800 outline-none"
+                  onChange={(e) => {
+                    updateProperties("inner-text", e.target.value);
+                  }}
+                ></textarea>
               </li>
-              {selectedElement.element === "a" ? (
-                <div className="flex flex-col items-center gap-2">
-                  <label>href (Link)</label>
-                  <input
-                    className="border-2 border-black outline-none px-1"
-                    onChange={(e) => {
-                      updateProperties("href", e.target.value);
-                    }}
-                  ></input>
-                  <a href={selectedElement.href} target="_blank">
-                    <button className="px-3 py-1 border-2 border-black">
-                      Test Link
-                    </button>
-                  </a>
+            ) : null}
+            <ul className="mt-5">
+              <li>
+                {selectedElement.element === "a" ? (
+                  <div className="flex flex-col items-center gap-2">
+                    <label>href (Link)</label>
+                    <input
+                      className="border-2 border-black outline-none px-1"
+                      onChange={(e) => {
+                        updateProperties("href", e.target.value);
+                      }}
+                    ></input>
+                    <a href={selectedElement.href} target="_blank">
+                      <button className="px-3 py-1 border-2 border-black">
+                        Test Link
+                      </button>
+                    </a>
+                  </div>
+                ) : null}
+              </li>
+              <li className="text-center mb-3">
+                <div className="flex items-center gap-2 mb-3">
+                  <h2>Children</h2>
+                  <FaChildren fontSize={"1.5rem"}></FaChildren>
                 </div>
-              ) : null}
-              {selectedElement !== null
-                ? selectedElement.children.length > 0
-                  ? selectedElement.children.map((child, index) => (
-                      <li
-                        className="max-w-[10rem] mb-1 border-2 border-black cursor-pointer text-lg text-nowrap text-ellipsis overflow-hidden"
-                        key={index}
-                        onClick={() => {
-                          setPreviousElements([
-                            ...previousElements!,
-                            selectedElement.id,
-                          ]);
-                          setSelectedElement(child);
-                        }}
-                      >
-                        {"<" + child.element + "/>: " + child.innerText}
-                      </li>
-                    ))
-                  : "No Children"
-                : null}
+                {selectedElement !== null
+                  ? selectedElement.children.length > 0
+                    ? selectedElement.children.map((child, index) => (
+                        <li
+                          className="max-w-[10rem] mb-1 px-3 py-1 border-2 border-white cursor-pointer text-lg text-nowrap text-ellipsis overflow-hidden"
+                          key={index}
+                          onClick={() => {
+                            setPreviousElements([
+                              ...previousElements!,
+                              selectedElement.id,
+                            ]);
+                            setSelectedElement(child);
+                          }}
+                        >
+                          {"<" + child.element + "/>: " + child.innerText}
+                        </li>
+                      ))
+                    : "No Children"
+                  : null}
+              </li>
             </ul>
             <li>
               <button
-                className="px-3 py-1 border-2 border-black"
+                className="px-6 py-1 border-2 border-white rounded-full"
                 onClick={() => {
                   updateProperties("delete", "");
                 }}

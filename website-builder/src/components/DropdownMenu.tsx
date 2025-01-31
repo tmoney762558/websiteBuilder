@@ -64,7 +64,7 @@ const DropdownMenu = ({
                         option.name === selectedElement.visibility ||
                         option.name === selectedElement.position
                         ? "border-red-500"
-                        : "border-black"
+                        : "border-white"
                       : ""
                   }`}
                 >
@@ -88,17 +88,17 @@ const DropdownMenu = ({
                   } ${
                     type === "Text Colors"
                       ? option.color === selectedElement.textColor
-                        ? "border-2 border-neutral-600"
-                        : option.squareColor === "bg-white"
-                        ? "border-2 border-black"
+                        ? "border-2 border-white"
+                        : option.squareColor === "bg-neutral-300"
+                        ? "border-2 border-white"
                         : ""
                       : ""
                   } ${
                     type === "Background Colors"
                       ? option.color === selectedElement.backgroundColor
-                        ? "border-2 border-neutral-600"
+                        ? "border-2 border-neutral-300"
                         : option.color === "bg-white"
-                        ? "border-2 border-black"
+                        ? "border-2 border-white"
                         : ""
                       : ""
                   } cursor-pointer`}

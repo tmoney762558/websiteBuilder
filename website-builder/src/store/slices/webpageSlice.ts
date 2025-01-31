@@ -23,10 +23,11 @@ interface Webpage {
   id: number;
   name: string;
   webpage: WebpageElement[];
+  color: string;
 }
 
 interface WebpageState {
-    webpages: Webpage[];
+  webpages: Webpage[];
 }
 
 const initialState: WebpageState = {
@@ -43,9 +44,10 @@ const webpageSlice = createSlice({
     },
     removeWebpage: (state: WebpageState, action: PayloadAction<number>) => {
       // Removes webpage using an id
-      state.webpages.filter(
+      const newState = state.webpages.filter(
         (webpage) => webpage.id !== action.payload
       );
+      state.webpages = newState;
     },
     updateWebpage: (state: WebpageState, action: PayloadAction<Webpage>) => {
       // Updates a specific webpage using an id

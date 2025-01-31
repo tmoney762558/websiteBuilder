@@ -43,8 +43,9 @@ const WebsiteBuilder = () => {
 
   const [previousElements, setpreviousElements] = useState<number[]>([]);
 
-  const [showExportMessage, setShowExportMessage] = useState<boolean>(false);
-  const [slidingIn, setSlidingIn] = useState<boolean>(false); // Determines the action of the export message's animation
+  const [showSaveMessage, setShowSaveMessage] = useState<boolean>(false);
+  const [showExportMessage, setShowExportMessage] = useState<boolean>(false); // Handles the visibility of the export message
+  const [slidingIn, setSlidingIn] = useState<boolean[]>([false, false]); // Determines the action of the export message's animation
 
   const webpageRef = useRef<HTMLDivElement>(null);
 
@@ -53,8 +54,7 @@ const WebsiteBuilder = () => {
       if (currentWebpage.webpage.length > 0) {
         dispatch(setWebpageHTML(currentWebpage.webpage));
       }
-    }
-    else {
+    } else {
       dispatch(setWebpageHTML([]));
     }
   }, [currentWebpage, dispatch]);
@@ -339,18 +339,37 @@ const WebsiteBuilder = () => {
     <div className="flex justify-center relative">
       {showExportMessage ? (
         <div
-          className={`flex items-center gap-3 absolute top-5 w-fit px-5 py-2 border-2 border-black text-center ${slidingIn ? "slide-in-top" : "fade-out"}`}
+          className={`flex items-center gap-3 absolute top-5 w-fit px-5 py-2 border-2 border-black text-center ${
+            slidingIn[0] ? "slide-in-top" : "fade-out"
+          }`}
           onAnimationEnd={() => {
-            if (slidingIn) {
-              setSlidingIn(false);
-            }
-            else {
-              setSlidingIn(true);
+            if (slidingIn[0]) {
+              setSlidingIn([false, slidingIn[1]]);
+            } else {
+              setSlidingIn([true, slidingIn[1]]);
               setShowExportMessage(false);
             }
           }}
         >
           <p>Successfully Exported HTML</p>
+          <CiCircleCheck fill="green" fontSize={"2rem"}></CiCircleCheck>
+        </div>
+      ) : null}
+      {showSaveMessage ? (
+        <div
+          className={`flex items-center gap-3 absolute top-5 w-fit px-5 py-2 border-2 border-black text-center ${
+            slidingIn[1] ? "slide-in-top" : "fade-out"
+          }`}
+          onAnimationEnd={() => {
+            if (slidingIn[1]) {
+              setSlidingIn([slidingIn[0], false]);
+            } else {
+              setSlidingIn([slidingIn[0], true]);
+              setShowSaveMessage(false);
+            }
+          }}
+        >
+          <p>Successfully Saved Website</p>
           <CiCircleCheck fill="green" fontSize={"2rem"}></CiCircleCheck>
         </div>
       ) : null}
@@ -375,6 +394,7 @@ const WebsiteBuilder = () => {
         webpageHTML={webpageHTML}
         webpageRef={webpageRef}
         setShowExportMessage={setShowExportMessage}
+        setShowSaveMessage={setShowSaveMessage}
       ></WebpageOptions>
     </div>
   );

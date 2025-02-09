@@ -65,8 +65,10 @@ const WebsiteBuilder = () => {
     }${element.display !== "" ? " " + element.display : ""}${
       element.flexDirection !== "" ? " " + element.flexDirection : ""
     }${element.justifyContent !== "" ? " " + element.justifyContent : ""}${
-      element.textColor !== "" ? " " + element.textColor : ""
-    }${element.backgroundColor !== "" ? " " + element.backgroundColor : ""}`;
+      element.alignItems !== "" ? " " + element.alignItems : ""
+    }${element.textColor !== "" ? " " + element.textColor : ""}${
+      element.backgroundColor !== "" ? " " + element.backgroundColor : ""
+    }`;
     switch (element.element) {
       case "div": {
         return (
@@ -237,6 +239,8 @@ const WebsiteBuilder = () => {
         updatedElement = { ...selectedElement, flexDirection: value };
       } else if (propertyToUpdate === "justify-content") {
         updatedElement = { ...selectedElement, justifyContent: value };
+      } else if (propertyToUpdate === "align-items") {
+        updatedElement = { ...selectedElement, alignItems: value };
       } else if (propertyToUpdate === "background-color") {
         updatedElement = { ...selectedElement, backgroundColor: value };
       } else if (propertyToUpdate === "text-color") {

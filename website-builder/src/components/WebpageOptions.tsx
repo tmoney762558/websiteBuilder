@@ -430,6 +430,32 @@ const WebpageOptions = ({
       },
     },
   ];
+  const alignItemsOptions = [
+    {
+      name: "items-start",
+      callbackFunction: () => {
+        updateProperties("align-items", "items-start");
+      },
+    },
+    {
+      name: "items-center",
+      callbackFunction: () => {
+        updateProperties("align-items", "items-center");
+      },
+    },
+    {
+      name: "items-end",
+      callbackFunction: () => {
+        updateProperties("align-items", "items-end");
+      },
+    },
+    {
+      name: "items-between",
+      callbackFunction: () => {
+        updateProperties("align-items", "items-between");
+      },
+    },
+  ];
   const textColors = [
     {
       callbackFunction: () => {
@@ -562,6 +588,10 @@ const WebpageOptions = ({
               onClick={() => {
                 setShowSaveMessage(true);
                 if (doesWebpageExist(currentId)) {
+                  if (webpageName === "") {
+                    alert("Please enter a name for the webpage.");
+                    return;
+                  }
                   dispatch(
                     updateWebpage({
                       id: currentId,
@@ -591,7 +621,7 @@ const WebpageOptions = ({
               className="w-[95%] mt-3 px-2 py-1 bg-neutral-800 rounded-full outline-none"
               type="text"
               placeholder="Website Name"
-              defaultValue={currentWebpage ? currentWebpage.name : "Website"}
+              value={currentWebpage ? currentWebpage.name : "Website"}
               onChange={(e) => {
                 setWebpageName(e.target.value);
               }}
@@ -713,6 +743,12 @@ const WebpageOptions = ({
               type="HTML Elements / Styles"
               name="Justify Content"
               dropdownOptions={justifyContentOptions}
+              selectedElement={selectedElement}
+            ></DropdownMenu>
+            <DropdownMenu
+              type="HTML Elements / Styles"
+              name="Align Items"
+              dropdownOptions={alignItemsOptions}
               selectedElement={selectedElement}
             ></DropdownMenu>
             <DropdownMenu

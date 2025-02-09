@@ -31,7 +31,9 @@ interface WebpageState {
 }
 
 const initialState: WebpageState = {
-  webpages: [],
+  webpages: localStorage.getItem("webpages")
+    ? JSON.parse(localStorage.getItem("webpages") as string)
+    : [],
 };
 
 const webpageSlice = createSlice({
@@ -41,6 +43,7 @@ const webpageSlice = createSlice({
     addWebpage: (state: WebpageState, action: PayloadAction<Webpage>) => {
       // Adds webpage to the saved webpages
       state.webpages.push(action.payload);
+      localStorage.setItem("webpages", JSON.stringify(state.webpages));
     },
     removeWebpage: (state: WebpageState, action: PayloadAction<number>) => {
       // Removes webpage using an id
@@ -48,6 +51,7 @@ const webpageSlice = createSlice({
         (webpage) => webpage.id !== action.payload
       );
       state.webpages = newState;
+      localStorage.setItem("webpages", JSON.stringify(state.webpages));
     },
     updateWebpage: (state: WebpageState, action: PayloadAction<Webpage>) => {
       // Updates a specific webpage using an id
@@ -55,6 +59,7 @@ const webpageSlice = createSlice({
         webpage.id === action.payload.id ? action.payload : webpage
       );
       state.webpages = newState;
+      localStorage.setItem("webpages", JSON.stringify(state.webpages));
     },
   },
 });

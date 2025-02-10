@@ -58,6 +58,9 @@ const WebpageOptions = ({
   const dispatch = useDispatch();
 
   const innerTextInput = useRef<HTMLTextAreaElement>(null);
+  const webpageNameInput = useRef<HTMLInputElement>(null);
+  const widthInput = useRef<HTMLInputElement>(null);
+  const heightInput = useRef<HTMLInputElement>(null);
 
   const [webpageName, setWebpageName] = useState<string>("Website");
   const [webpageColor, setWebpageColor] = useState<string>("#FFFFFF");
@@ -96,6 +99,12 @@ const WebpageOptions = ({
     }
     return false;
   };
+
+  useEffect(() => {
+    if (currentWebpage && webpageNameInput && webpageNameInput.current) {
+      webpageNameInput.current.value = currentWebpage.name;
+    }
+  }, [currentWebpage]);
 
   /* DROPDOWN OPTIONS */
 
@@ -618,10 +627,11 @@ const WebpageOptions = ({
           <li className="flex flex-col items-center w-full my-5">
             <label>Website Name:</label>
             <input
+              ref={webpageNameInput}
               className="w-[95%] mt-3 px-2 py-1 bg-neutral-800 rounded-full outline-none"
               type="text"
               placeholder="Website Name"
-              value={currentWebpage ? currentWebpage.name : "Website"}
+              defaultValue={currentWebpage ? currentWebpage.name : "Website"}
               onChange={(e) => {
                 setWebpageName(e.target.value);
               }}
@@ -667,6 +677,7 @@ const WebpageOptions = ({
           <button
             onClick={() => {
               navigator.clipboard.writeText(webpageRef!.current!.innerHTML);
+              setSelectedElement(null);
               setShowExportMessage(true);
             }}
             className=" mt-3 px-3 py-1 border-2 border-white"
@@ -730,8 +741,150 @@ const WebpageOptions = ({
               dropdownOptions={htmlElements}
               selectedElement={selectedElement}
             ></DropdownMenu>
-            <li>
+            <li className="">
               <h2 className="text-lg">Styles</h2>
+            </li>
+            <li className="flex flex-col gap-5 w-full">
+              <div className="w-full">
+                <h2 className="w-full text-center">Width</h2>
+                <div className="flex justify-center gap-2 mt-3">
+                  <button
+                    className={`p-2 border-2 ${
+                      selectedElement && selectedElement.width === "25%"
+                        ? "border-red-700"
+                        : "border-white"
+                    }`}
+                    onClick={() => {
+                      updateProperties("width", "25%");
+                    }}
+                  >
+                    25%
+                  </button>
+                  <button
+                    className={`p-2 border-2 ${
+                      selectedElement && selectedElement.width === "50%"
+                        ? "border-red-700"
+                        : "border-white"
+                    }`}
+                    onClick={() => {
+                      updateProperties("width", "50%");
+                    }}
+                  >
+                    50%
+                  </button>
+                  <button
+                    className={`p-2 border-2 ${
+                      selectedElement && selectedElement.width === "75%"
+                        ? "border-red-700"
+                        : "border-white"
+                    }`}
+                    onClick={() => {
+                      updateProperties("width", "75%");
+                    }}
+                  >
+                    75%
+                  </button>
+                  <button
+                    className={`p-2 border-2 ${
+                      selectedElement && selectedElement.width === "100%"
+                        ? "border-red-700"
+                        : "border-white"
+                    }`}
+                    onClick={() => {
+                      updateProperties("width", "100%");
+                    }}
+                  >
+                    100%
+                  </button>
+                </div>
+                <form
+                  className="flex flex-col items-center gap-5"
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    updateProperties("width", widthInput!.current!.value);
+                  }}
+                >
+                  <input
+                    ref={widthInput}
+                    className="w-[95%] mt-7 px-2 py-1 bg-neutral-800 rounded-full outline-none"
+                    type="number"
+                    placeholder="Enter width in pixels"
+                  ></input>
+                  <button className="px-3 border-2 border-white" type="submit">
+                    Update Width
+                  </button>
+                </form>
+              </div>
+              <div className="w-full">
+                <h2 className="w-full text-center">Height</h2>{" "}
+                <div className="flex justify-center gap-2 mt-3">
+                  <button
+                    className={`p-2 border-2 ${
+                      selectedElement && selectedElement.height === "25%"
+                        ? "border-red-700"
+                        : "border-white"
+                    }`}
+                    onClick={() => {
+                      updateProperties("height", "25%");
+                    }}
+                  >
+                    25%
+                  </button>
+                  <button
+                    className={`p-2 border-2 ${
+                      selectedElement && selectedElement.height === "50%"
+                        ? "border-red-700"
+                        : "border-white"
+                    }`}
+                    onClick={() => {
+                      updateProperties("height", "50%");
+                    }}
+                  >
+                    50%
+                  </button>
+                  <button
+                    className={`p-2 border-2 ${
+                      selectedElement && selectedElement.height === "75%"
+                        ? "border-red-700"
+                        : "border-white"
+                    }`}
+                    onClick={() => {
+                      updateProperties("height", "75%");
+                    }}
+                  >
+                    75%
+                  </button>
+                  <button
+                    className={`p-2 border-2 ${
+                      selectedElement && selectedElement.height === "100%"
+                        ? "border-red-700"
+                        : "border-white"
+                    }`}
+                    onClick={() => {
+                      updateProperties("height", "100%");
+                    }}
+                  >
+                    100%
+                  </button>
+                </div>
+                <form
+                  className="flex flex-col items-center gap-5"
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    updateProperties("height", heightInput!.current!.value);
+                  }}
+                >
+                  <input
+                    ref={heightInput}
+                    className="w-[95%] mt-7 px-2 py-1 bg-neutral-800 rounded-full outline-none"
+                    type="number"
+                    placeholder="Enter height in pixels"
+                  ></input>
+                  <button className="px-3 border-2 border-white" type="submit">
+                    Update Height
+                  </button>
+                </form>
+              </div>
             </li>
             <DropdownMenu
               type="HTML Elements / Styles"

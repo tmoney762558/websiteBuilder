@@ -60,15 +60,27 @@ const WebsiteBuilder = () => {
   }, [currentWebpage, dispatch]);
 
   function determineHTMLElement(element: WebpageElement) {
-    const styles = `cursor-pointer${
-      selectedElement === element ? " border-2 border-black" : ""
+    const styles = `${
+      selectedElement === element ? "border-2 border-black" : ""
     }${element.display !== "" ? " " + element.display : ""}${
       element.flexDirection !== "" ? " " + element.flexDirection : ""
     }${element.justifyContent !== "" ? " " + element.justifyContent : ""}${
       element.alignItems !== "" ? " " + element.alignItems : ""
     }${element.textColor !== "" ? " " + element.textColor : ""}${
-      element.backgroundColor !== "" ? " " + element.backgroundColor : ""
+      element.backgroundColor === ""
+        ? " bg-neutral-300"
+        : " " + element.backgroundColor
     }`;
+
+    let widthUnit = "px";
+    let heightUnit = "px";
+
+    if (element.width.includes("%")) {
+      widthUnit = "";
+    }
+    if (element.height.includes("%")) {
+      heightUnit = "";
+    }
     switch (element.element) {
       case "div": {
         return (
@@ -76,6 +88,10 @@ const WebsiteBuilder = () => {
             className={`${styles}${
               element.children.length === 0 ? " w-full h-fit min-h-5" : ""
             }`}
+            style={{
+              width: element.width + widthUnit,
+              height: element.height + heightUnit,
+            }} // Sets the width and height of the element
             onClick={() => {
               setSelectedElement(element);
               setpreviousElements([element.id]);
@@ -97,6 +113,10 @@ const WebsiteBuilder = () => {
             className={`${styles}${
               element.children.length === 0 ? " w-full h-fit min-h-5" : ""
             }`}
+            style={{
+              width: element.width + widthUnit,
+              height: element.height + heightUnit,
+            }} // Sets the width and height of the element
             onClick={() => {
               setSelectedElement(element);
               setpreviousElements([element.id]);
@@ -118,6 +138,10 @@ const WebsiteBuilder = () => {
             className={`${styles}${
               element.children.length === 0 ? " w-full h-fit min-h-5" : ""
             }`}
+            style={{
+              width: element.width + widthUnit,
+              height: element.height + heightUnit,
+            }} // Sets the width and height of the element
             onClick={() => {
               setSelectedElement(element);
               setpreviousElements([element.id]);
@@ -135,6 +159,10 @@ const WebsiteBuilder = () => {
             className={`${styles}${
               element.children.length === 0 ? " w-full h-fit min-h-5" : ""
             }`}
+            style={{
+              width: element.width + widthUnit,
+              height: element.height + heightUnit,
+            }} // Sets the width and height of the element
             onClick={() => {
               setSelectedElement(element);
               setpreviousElements([]);
@@ -150,6 +178,10 @@ const WebsiteBuilder = () => {
         return (
           <h1
             className={styles}
+            style={{
+              width: element.width + widthUnit,
+              height: element.height + heightUnit,
+            }} // Sets the width and height of the element
             onClick={() => {
               {
                 setSelectedElement(element);
@@ -165,6 +197,10 @@ const WebsiteBuilder = () => {
         return (
           <h2
             className={styles}
+            style={{
+              width: element.width + widthUnit,
+              height: element.height + heightUnit,
+            }} // Sets the width and height of the element
             onClick={() => {
               {
                 setSelectedElement(element);
@@ -180,6 +216,10 @@ const WebsiteBuilder = () => {
         return (
           <h3
             className={styles}
+            style={{
+              width: element.width + widthUnit,
+              height: element.height + heightUnit,
+            }} // Sets the width and height of the element
             onClick={() => {
               {
                 setSelectedElement(element);
@@ -195,6 +235,10 @@ const WebsiteBuilder = () => {
         return (
           <p
             className={styles}
+            style={{
+              width: element.width + widthUnit,
+              height: element.height + heightUnit,
+            }} // Sets the width and height of the element
             onClick={() => {
               {
                 setSelectedElement(element);
@@ -210,6 +254,10 @@ const WebsiteBuilder = () => {
         return (
           <a
             className={styles}
+            style={{
+              width: element.width + widthUnit,
+              height: element.height + heightUnit,
+            }} // Sets the width and height of the element
             target="_blank"
             href={element.href}
             onClick={() => {
@@ -241,6 +289,10 @@ const WebsiteBuilder = () => {
         updatedElement = { ...selectedElement, justifyContent: value };
       } else if (propertyToUpdate === "align-items") {
         updatedElement = { ...selectedElement, alignItems: value };
+      } else if (propertyToUpdate === "width") {
+        updatedElement = { ...selectedElement, width: value };
+      } else if (propertyToUpdate === "height") {
+        updatedElement = { ...selectedElement, height: value };
       } else if (propertyToUpdate === "background-color") {
         updatedElement = { ...selectedElement, backgroundColor: value };
       } else if (propertyToUpdate === "text-color") {
@@ -378,7 +430,10 @@ const WebsiteBuilder = () => {
         </div>
       ) : null}
       <Navbar></Navbar>
-      <div ref={webpageRef} className="flex-grow">
+      <div
+        ref={webpageRef}
+        className="flex-grow max-w-full max-h-screen overflow-x-hidden overflow-y-auto"
+      >
         {
           /* Webpage */
           webpageHTML.map((htmlElement, index) => (

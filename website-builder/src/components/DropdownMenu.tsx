@@ -83,23 +83,19 @@ const DropdownMenu = ({
             ? dropdownOptions.map((option, index) => (
                 <li
                   key={index}
-                  className={`w-5 aspect-square ${
+                  className={`w-5 aspect-square border-2 ${
                     option.squareColor ? option.squareColor : option.color
                   } ${
                     type === "Text Colors"
                       ? option.color === selectedElement.textColor
                         ? "border-2 border-white"
-                        : option.squareColor === "bg-neutral-300"
-                        ? "border-2 border-white"
-                        : ""
+                        : "border-2 border-black"
                       : ""
                   } ${
                     type === "Background Colors"
                       ? option.color === selectedElement.backgroundColor
-                        ? "border-2 border-neutral-300"
-                        : option.color === "bg-white"
                         ? "border-2 border-white"
-                        : ""
+                        : "border-2 border-black"
                       : ""
                   } cursor-pointer`}
                   onClick={option.callbackFunction}

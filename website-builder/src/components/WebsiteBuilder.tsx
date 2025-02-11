@@ -66,19 +66,21 @@ const WebsiteBuilder = () => {
       element.flexDirection !== "" ? " " + element.flexDirection : ""
     }${element.justifyContent !== "" ? " " + element.justifyContent : ""}${
       element.alignItems !== "" ? " " + element.alignItems : ""
-    }${element.textColor !== "" ? " " + element.textColor : ""}${
+    }${
       element.backgroundColor === ""
         ? " bg-neutral-300"
         : " " + element.backgroundColor
+    }${element.textSize !== "" ? " " + element.textSize : ""}${
+      element.textColor !== "" ? " " + element.textColor : ""
     }`;
 
     let widthUnit = "px";
     let heightUnit = "px";
 
-    if (element.width.includes("%")) {
+    if (element.width.includes("%") || element.width === "fit-content") {
       widthUnit = "";
     }
-    if (element.height.includes("%")) {
+    if (element.height.includes("%") || element.height === "fit-content") {
       heightUnit = "";
     }
     switch (element.element) {
@@ -297,6 +299,8 @@ const WebsiteBuilder = () => {
         updatedElement = { ...selectedElement, backgroundColor: value };
       } else if (propertyToUpdate === "text-color") {
         updatedElement = { ...selectedElement, textColor: value };
+      } else if (propertyToUpdate === "text-size") {
+        updatedElement = { ...selectedElement, textSize: value };
       } else if (propertyToUpdate === "href") {
         updatedElement = { ...selectedElement, href: value };
       } else if (propertyToUpdate === "delete") {
@@ -432,7 +436,7 @@ const WebsiteBuilder = () => {
       <Navbar></Navbar>
       <div
         ref={webpageRef}
-        className="flex-grow max-w-full max-h-screen overflow-x-hidden overflow-y-auto"
+        className="flex-1 max-w-full max-h-screen overflow-x-auto overflow-y-auto"
       >
         {
           /* Webpage */

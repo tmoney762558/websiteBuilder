@@ -8,7 +8,7 @@ const Navbar = () => {
   const webpages = useSelector((state: RootState) => state.webpage.webpages);
 
   return (
-    <nav className="w-full max-w-[12rem] sticky top-0 left-0 h-screen bg-black text-neutral-300 font-roboto">
+    <nav className="w-full max-w-[12rem] sticky top-0 left-0 min-h-screen bg-yellow-400 text-black font-roboto overflow-y-auto">
       <ul className="flex flex-col items-center gap-2 p-5">
         <li className="flex gap-2 items-center">
           <h1 className="text-lg font-bold text-nowrap"><i>Webopolis</i></h1>

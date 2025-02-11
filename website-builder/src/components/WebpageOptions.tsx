@@ -62,10 +62,12 @@ const WebpageOptions = ({
   const widthInput = useRef<HTMLInputElement>(null);
   const heightInput = useRef<HTMLInputElement>(null);
 
-  const [webpageName, setWebpageName] = useState<string>("Website");
-  const [webpageColor, setWebpageColor] = useState<string>("#FFFFFF");
   const webpages = useSelector((state: RootState) => state.webpage.webpages);
   const currentWebpage = webpages.find((webpage) => webpage.id === currentId);
+  const [webpageName, setWebpageName] = useState<string>(
+    currentWebpage ? currentWebpage!.name : "Website"
+  );
+  const [webpageColor, setWebpageColor] = useState<string>("#FFFFFF");
 
   useEffect(() => {
     if (innerTextInput && innerTextInput.current && selectedElement) {
@@ -465,6 +467,58 @@ const WebpageOptions = ({
       },
     },
   ];
+  const widthOptions = [
+    {
+      name: "25%",
+      callbackFunction: () => {
+        updateProperties("width", "25%");
+      },
+    },
+    {
+      name: "50%",
+      callbackFunction: () => {
+        updateProperties("width", "50%");
+      },
+    },
+    {
+      name: "75%",
+      callbackFunction: () => {
+        updateProperties("width", "75%");
+      },
+    },
+    {
+      name: "100%",
+      callbackFunction: () => {
+        updateProperties("width", "100%");
+      },
+    },
+  ];
+  const heightOptions = [
+    {
+      name: "25%",
+      callbackFunction: () => {
+        updateProperties("height", "25%");
+      },
+    },
+    {
+      name: "50%",
+      callbackFunction: () => {
+        updateProperties("height", "50%");
+      },
+    },
+    {
+      name: "75%",
+      callbackFunction: () => {
+        updateProperties("height", "75%");
+      },
+    },
+    {
+      name: "100%",
+      callbackFunction: () => {
+        updateProperties("height", "100%");
+      },
+    },
+  ];
   const textColors = [
     {
       callbackFunction: () => {
@@ -586,9 +640,41 @@ const WebpageOptions = ({
       color: "bg-black",
     },
   ];
+  const textSizes = [
+    {
+      name: "sm", // Small
+      callbackFunction: () => {
+        updateProperties("text-size", "text-sm");
+      },
+    },
+    {
+      name: "md", // Medium
+      callbackFunction: () => {
+        updateProperties("text-size", "text-md");
+      },
+    },
+    {
+      name: "lg", // Large
+      callbackFunction: () => {
+        updateProperties("text-size", "text-lg");
+      },
+    },
+    {
+      name: "xl", // Extra Large
+      callbackFunction: () => {
+        updateProperties("text-size", "text-xl");
+      },
+    },
+    {
+      name: "2xl", // 2 Extra Large
+      callbackFunction: () => {
+        updateProperties("text-size", "text-2xl");
+      },
+    },
+  ];
 
   return (
-    <div className="w-[20rem] sticky top-0 right-0 h-screen overflow-y-scroll bg-black text-white font-roboto">
+    <div className="w-[20rem] sticky top-0 right-0 h-screen overflow-y-auto bg-yellow-400 text-black font-mono text-lg">
       {selectedElement === null ? (
         <ul className="flex flex-col w-full items-center gap-2 p-5">
           <li className="flex justify-end w-full py-2 px-3">
@@ -623,15 +709,15 @@ const WebpageOptions = ({
               fontSize={"1.3rem"}
             ></FaRegSave>
           </li>
-          <li className="text-lg">Editor</li>
+          <li className="text-xl">Editor</li>
           <li className="flex flex-col items-center w-full my-5">
             <label>Website Name:</label>
             <input
               ref={webpageNameInput}
-              className="w-[95%] mt-3 px-2 py-1 bg-neutral-800 rounded-full outline-none"
+              className="w-[95%] mt-3 px-2 py-1 bg-white rounded-full outline-none"
               type="text"
               placeholder="Website Name"
-              defaultValue={currentWebpage ? currentWebpage.name : "Website"}
+              defaultValue={currentWebpage ? currentWebpage!.name : ""}
               onChange={(e) => {
                 setWebpageName(e.target.value);
               }}
@@ -680,7 +766,7 @@ const WebpageOptions = ({
               setSelectedElement(null);
               setShowExportMessage(true);
             }}
-            className=" mt-3 px-3 py-1 border-2 border-white"
+            className=" mt-3 px-3 py-1 border-2 border-black"
           >
             Export HTML
           </button>
@@ -746,143 +832,49 @@ const WebpageOptions = ({
             </li>
             <li className="flex flex-col gap-5 w-full">
               <div className="w-full">
-                <h2 className="w-full text-center">Width</h2>
-                <div className="flex justify-center gap-2 mt-3">
-                  <button
-                    className={`p-2 border-2 ${
-                      selectedElement && selectedElement.width === "25%"
-                        ? "border-red-700"
-                        : "border-white"
-                    }`}
-                    onClick={() => {
-                      updateProperties("width", "25%");
-                    }}
-                  >
-                    25%
-                  </button>
-                  <button
-                    className={`p-2 border-2 ${
-                      selectedElement && selectedElement.width === "50%"
-                        ? "border-red-700"
-                        : "border-white"
-                    }`}
-                    onClick={() => {
-                      updateProperties("width", "50%");
-                    }}
-                  >
-                    50%
-                  </button>
-                  <button
-                    className={`p-2 border-2 ${
-                      selectedElement && selectedElement.width === "75%"
-                        ? "border-red-700"
-                        : "border-white"
-                    }`}
-                    onClick={() => {
-                      updateProperties("width", "75%");
-                    }}
-                  >
-                    75%
-                  </button>
-                  <button
-                    className={`p-2 border-2 ${
-                      selectedElement && selectedElement.width === "100%"
-                        ? "border-red-700"
-                        : "border-white"
-                    }`}
-                    onClick={() => {
-                      updateProperties("width", "100%");
-                    }}
-                  >
-                    100%
-                  </button>
-                </div>
+                <DropdownMenu
+                  type="HTML Elements / Styles"
+                  name="Width (%)"
+                  dropdownOptions={widthOptions}
+                  selectedElement={selectedElement}
+                ></DropdownMenu>
                 <form
                   className="flex flex-col items-center gap-5"
                   onSubmit={(e) => {
                     e.preventDefault();
                     updateProperties("width", widthInput!.current!.value);
+                    widthInput!.current!.value = "";
                   }}
                 >
                   <input
                     ref={widthInput}
-                    className="w-[95%] mt-7 px-2 py-1 bg-neutral-800 rounded-full outline-none"
+                    className="w-[95%] mt-3 px-2 py-1 bg-white rounded-full outline-none"
                     type="number"
                     placeholder="Enter width in pixels"
                   ></input>
-                  <button className="px-3 border-2 border-white" type="submit">
-                    Update Width
-                  </button>
                 </form>
               </div>
               <div className="w-full">
-                <h2 className="w-full text-center">Height</h2>{" "}
-                <div className="flex justify-center gap-2 mt-3">
-                  <button
-                    className={`p-2 border-2 ${
-                      selectedElement && selectedElement.height === "25%"
-                        ? "border-red-700"
-                        : "border-white"
-                    }`}
-                    onClick={() => {
-                      updateProperties("height", "25%");
-                    }}
-                  >
-                    25%
-                  </button>
-                  <button
-                    className={`p-2 border-2 ${
-                      selectedElement && selectedElement.height === "50%"
-                        ? "border-red-700"
-                        : "border-white"
-                    }`}
-                    onClick={() => {
-                      updateProperties("height", "50%");
-                    }}
-                  >
-                    50%
-                  </button>
-                  <button
-                    className={`p-2 border-2 ${
-                      selectedElement && selectedElement.height === "75%"
-                        ? "border-red-700"
-                        : "border-white"
-                    }`}
-                    onClick={() => {
-                      updateProperties("height", "75%");
-                    }}
-                  >
-                    75%
-                  </button>
-                  <button
-                    className={`p-2 border-2 ${
-                      selectedElement && selectedElement.height === "100%"
-                        ? "border-red-700"
-                        : "border-white"
-                    }`}
-                    onClick={() => {
-                      updateProperties("height", "100%");
-                    }}
-                  >
-                    100%
-                  </button>
-                </div>
+                <DropdownMenu
+                  type="HTML Elements / Styles"
+                  name="Height (%)"
+                  dropdownOptions={heightOptions}
+                  selectedElement={selectedElement}
+                ></DropdownMenu>
                 <form
                   className="flex flex-col items-center gap-5"
                   onSubmit={(e) => {
                     e.preventDefault();
                     updateProperties("height", heightInput!.current!.value);
+                    heightInput!.current!.value = "";
                   }}
                 >
                   <input
                     ref={heightInput}
-                    className="w-[95%] mt-7 px-2 py-1 bg-neutral-800 rounded-full outline-none"
+                    className="w-[95%] mt-3 px-2 py-1 bg-white rounded-full outline-none"
                     type="number"
                     placeholder="Enter height in pixels"
                   ></input>
-                  <button className="px-3 border-2 border-white" type="submit">
-                    Update Height
-                  </button>
                 </form>
               </div>
             </li>
@@ -905,6 +897,12 @@ const WebpageOptions = ({
               selectedElement={selectedElement}
             ></DropdownMenu>
             <DropdownMenu
+              type="HTML Elements / Styles"
+              name={"Text Sizes"}
+              dropdownOptions={textSizes}
+              selectedElement={selectedElement}
+            ></DropdownMenu>
+            <DropdownMenu
               type="Text Colors"
               name="Text Color"
               dropdownOptions={textColors}
@@ -924,7 +922,7 @@ const WebpageOptions = ({
                 <h2 className="text-lg">InnerText</h2>
                 <textarea
                   ref={innerTextInput}
-                  className="max-w-[95%] p-3 bg-neutral-800 outline-none"
+                  className="max-w-[95%] p-3 bg-white outline-none"
                   onChange={(e) => {
                     updateProperties("inner-text", e.target.value);
                   }}
@@ -959,7 +957,7 @@ const WebpageOptions = ({
                   ? selectedElement.children.length > 0
                     ? selectedElement.children.map((child, index) => (
                         <li
-                          className="max-w-[10rem] mb-1 px-3 py-1 border-2 border-white cursor-pointer text-lg text-nowrap text-ellipsis overflow-hidden"
+                          className="max-w-[10rem] mb-1 px-3 py-1 border-2 border-black cursor-pointer text-lg text-nowrap text-ellipsis overflow-hidden"
                           key={index}
                           onClick={() => {
                             setPreviousElements([
@@ -978,7 +976,7 @@ const WebpageOptions = ({
             </ul>
             <li>
               <button
-                className="px-6 py-1 border-2 border-white rounded-full"
+                className="px-6 py-1 border-2 border-black rounded-full"
                 onClick={() => {
                   updateProperties("delete", "");
                 }}

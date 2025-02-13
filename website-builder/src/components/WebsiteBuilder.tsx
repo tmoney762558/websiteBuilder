@@ -22,6 +22,7 @@ interface WebpageElement {
   height: string;
   textSize: string;
   textColor: string;
+  textAlignment: string;
   backgroundColor: string;
   href: string;
 }
@@ -70,8 +71,12 @@ const WebsiteBuilder = () => {
       element.backgroundColor === ""
         ? " bg-neutral-300"
         : " " + element.backgroundColor
-    }${element.textSize !== "" ? " " + element.textSize : ""}${
-      element.textColor !== "" ? " " + element.textColor : ""
+    }${
+      element.textSize !== "" && element.textSize.includes("text")
+        ? " " + element.textSize
+        : ""
+    }${element.textColor !== "" ? " " + element.textColor : ""}${
+      element.textAlignment !== "" ? " " + element.textAlignment : ""
     }`;
 
     let widthUnit = "px";
@@ -93,7 +98,10 @@ const WebsiteBuilder = () => {
             style={{
               width: element.width + widthUnit,
               height: element.height + heightUnit,
-            }} // Sets the width and height of the element
+              fontSize: element.textSize.includes("text")
+                ? ""
+                : element.textSize,
+            }} // Sets the dynamic values for the element
             onClick={() => {
               setSelectedElement(element);
               setpreviousElements([element.id]);
@@ -118,7 +126,10 @@ const WebsiteBuilder = () => {
             style={{
               width: element.width + widthUnit,
               height: element.height + heightUnit,
-            }} // Sets the width and height of the element
+              fontSize: element.textSize.includes("text")
+                ? ""
+                : element.textSize,
+            }} // Sets the dynamic values for the element
             onClick={() => {
               setSelectedElement(element);
               setpreviousElements([element.id]);
@@ -143,7 +154,10 @@ const WebsiteBuilder = () => {
             style={{
               width: element.width + widthUnit,
               height: element.height + heightUnit,
-            }} // Sets the width and height of the element
+              fontSize: element.textSize.includes("text")
+                ? ""
+                : element.textSize,
+            }} // Sets the dynamic values for the element
             onClick={() => {
               setSelectedElement(element);
               setpreviousElements([element.id]);
@@ -164,7 +178,10 @@ const WebsiteBuilder = () => {
             style={{
               width: element.width + widthUnit,
               height: element.height + heightUnit,
-            }} // Sets the width and height of the element
+              fontSize: element.textSize.includes("text")
+                ? ""
+                : element.textSize,
+            }} // Sets the dynamic values for the element
             onClick={() => {
               setSelectedElement(element);
               setpreviousElements([]);
@@ -183,7 +200,10 @@ const WebsiteBuilder = () => {
             style={{
               width: element.width + widthUnit,
               height: element.height + heightUnit,
-            }} // Sets the width and height of the element
+              fontSize: element.textSize.includes("text")
+                ? ""
+                : element.textSize,
+            }} // Sets the dynamic values for the element
             onClick={() => {
               {
                 setSelectedElement(element);
@@ -202,7 +222,10 @@ const WebsiteBuilder = () => {
             style={{
               width: element.width + widthUnit,
               height: element.height + heightUnit,
-            }} // Sets the width and height of the element
+              fontSize: element.textSize.includes("text")
+                ? ""
+                : element.textSize,
+            }} // Sets the dynamic values for the element
             onClick={() => {
               {
                 setSelectedElement(element);
@@ -221,7 +244,10 @@ const WebsiteBuilder = () => {
             style={{
               width: element.width + widthUnit,
               height: element.height + heightUnit,
-            }} // Sets the width and height of the element
+              fontSize: element.textSize.includes("text")
+                ? ""
+                : element.textSize,
+            }} // Sets the dynamic values for the element
             onClick={() => {
               {
                 setSelectedElement(element);
@@ -240,7 +266,10 @@ const WebsiteBuilder = () => {
             style={{
               width: element.width + widthUnit,
               height: element.height + heightUnit,
-            }} // Sets the width and height of the element
+              fontSize: element.textSize.includes("text")
+                ? ""
+                : element.textSize,
+            }} // Sets the dynamic values for the element
             onClick={() => {
               {
                 setSelectedElement(element);
@@ -259,7 +288,10 @@ const WebsiteBuilder = () => {
             style={{
               width: element.width + widthUnit,
               height: element.height + heightUnit,
-            }} // Sets the width and height of the element
+              fontSize: element.textSize.includes("text")
+                ? ""
+                : element.textSize,
+            }} // Sets the dynamic values for the element
             target="_blank"
             href={element.href}
             onClick={() => {
@@ -301,6 +333,8 @@ const WebsiteBuilder = () => {
         updatedElement = { ...selectedElement, textColor: value };
       } else if (propertyToUpdate === "text-size") {
         updatedElement = { ...selectedElement, textSize: value };
+      } else if (propertyToUpdate === "text-alignment") {
+        updatedElement = { ...selectedElement, textAlignment: value };
       } else if (propertyToUpdate === "href") {
         updatedElement = { ...selectedElement, href: value };
       } else if (propertyToUpdate === "delete") {
@@ -399,7 +433,7 @@ const WebsiteBuilder = () => {
     <div className="flex justify-center relative">
       {showExportMessage ? (
         <div
-          className={`flex items-center gap-3 absolute top-5 w-fit px-5 py-2 border-2 border-black text-center ${
+          className={`flex items-center gap-3 absolute top-5 w-fit px-5 py-2 bg-white border-2 border-black text-center z-10 ${
             slidingIn[0] ? "slide-in-top" : "fade-out"
           }`}
           onAnimationEnd={() => {
@@ -417,7 +451,7 @@ const WebsiteBuilder = () => {
       ) : null}
       {showSaveMessage ? (
         <div
-          className={`flex items-center gap-3 absolute top-5 w-fit px-5 py-2 border-2 border-black text-center ${
+          className={`flex items-center gap-3 absolute top-5 w-fit px-5 py-2 bg-white border-2 border-black text-center z-10 ${
             slidingIn[1] ? "slide-in-top" : "fade-out"
           }`}
           onAnimationEnd={() => {

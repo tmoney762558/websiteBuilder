@@ -17,6 +17,7 @@ interface WebpageElement {
   height: string;
   textSize: string;
   textColor: string;
+  textAlignment: string;
   backgroundColor: string;
   href: string;
 }

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { ReactNode, useState } from "react";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 
 interface WebpageElement {
@@ -16,6 +16,7 @@ interface WebpageElement {
   height: string;
   textSize: string;
   textColor: string;
+  textAlignment: string;
   backgroundColor: string;
   href: string;
 }
@@ -32,11 +33,13 @@ const DropdownMenu = ({
   name,
   dropdownOptions,
   selectedElement,
+  inputForm,
 }: {
   type: string;
   name: string;
   dropdownOptions: DropdownOption[];
   selectedElement?: WebpageElement | null;
+  inputForm?: ReactNode;
 }) => {
   const [isActive, setIsActive] = useState<boolean>(false);
   return (
@@ -61,11 +64,17 @@ const DropdownMenu = ({
                         option.name === selectedElement.flexDirection ||
                         option.name === selectedElement.justifyContent ||
                         option.name === selectedElement.alignItems ||
+                        (option.name === selectedElement.width &&
+                          name !== "Height") ||
+                        (option.name === selectedElement.height &&
+                          name !== "Width") ||
                         option.name === selectedElement.visibility ||
-                        option.name === selectedElement.position
-                        ? "border-red-500"
-                        : "border-white"
-                      : ""
+                        option.name === selectedElement.position ||
+                        option.name === selectedElement.textSize ||
+                        option.name === selectedElement.textAlignment
+                        ? "border-white"
+                        : "border-black"
+                      : "border-black"
                   }`}
                 >
                   <button
@@ -104,6 +113,7 @@ const DropdownMenu = ({
             : null}
         </ul>
       ) : null}
+      {inputForm && isActive ? inputForm : null}
     </div>
   );
 };

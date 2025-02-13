@@ -25,6 +25,7 @@ interface WebpageElement {
   height: string;
   textSize: string;
   textColor: string;
+  textAlignment: string;
   backgroundColor: string;
   href: string;
 }
@@ -61,6 +62,7 @@ const WebpageOptions = ({
   const webpageNameInput = useRef<HTMLInputElement>(null);
   const widthInput = useRef<HTMLInputElement>(null);
   const heightInput = useRef<HTMLInputElement>(null);
+  const textSizeInput = useRef<HTMLInputElement>(null);
 
   const webpages = useSelector((state: RootState) => state.webpage.webpages);
   const currentWebpage = webpages.find((webpage) => webpage.id === currentId);
@@ -131,6 +133,7 @@ const WebpageOptions = ({
           height: "",
           textSize: "",
           textColor: "",
+          textAlignment: "",
           backgroundColor: "",
           href: "",
         };
@@ -139,7 +142,7 @@ const WebpageOptions = ({
           setPreviousElements([newElement.id]);
         } else {
           updateChildren(newElement);
-          setPreviousElements([...previousElements, selectedElement!.id]);
+          setPreviousElements([...previousElements, newElement!.id]);
         }
         setSelectedElement(newElement);
       },
@@ -162,6 +165,7 @@ const WebpageOptions = ({
           height: "",
           textSize: "",
           textColor: "",
+          textAlignment: "",
           backgroundColor: "",
           href: "",
         };
@@ -170,7 +174,7 @@ const WebpageOptions = ({
           setPreviousElements([newElement.id]);
         } else {
           updateChildren(newElement);
-          setPreviousElements([...previousElements, selectedElement!.id]);
+          setPreviousElements([...previousElements, newElement!.id]);
         }
         setSelectedElement(newElement);
       },
@@ -193,6 +197,7 @@ const WebpageOptions = ({
           height: "",
           textSize: "",
           textColor: "",
+          textAlignment: "",
           backgroundColor: "",
           href: "",
         };
@@ -201,7 +206,7 @@ const WebpageOptions = ({
           setPreviousElements([newElement.id]);
         } else {
           updateChildren(newElement);
-          setPreviousElements([...previousElements, selectedElement!.id]);
+          setPreviousElements([...previousElements, newElement!.id]);
         }
         setSelectedElement(newElement);
       },
@@ -224,6 +229,7 @@ const WebpageOptions = ({
           height: "",
           textSize: "",
           textColor: "",
+          textAlignment: "",
           backgroundColor: "",
           href: "",
         };
@@ -232,7 +238,7 @@ const WebpageOptions = ({
           setPreviousElements([newElement.id]);
         } else {
           updateChildren(newElement);
-          setPreviousElements([...previousElements, selectedElement!.id]);
+          setPreviousElements([...previousElements, newElement!.id]);
         }
         setSelectedElement(newElement);
       },
@@ -257,6 +263,7 @@ const WebpageOptions = ({
           height: "",
           textSize: "",
           textColor: "",
+          textAlignment: "",
           backgroundColor: "",
           href: "",
         };
@@ -285,6 +292,7 @@ const WebpageOptions = ({
           height: "",
           textSize: "",
           textColor: "",
+          textAlignment: "",
           backgroundColor: "",
           href: "",
         };
@@ -313,6 +321,7 @@ const WebpageOptions = ({
           height: "",
           textSize: "",
           textColor: "",
+          textAlignment: "",
           backgroundColor: "",
           href: "",
         };
@@ -344,6 +353,7 @@ const WebpageOptions = ({
           height: "",
           textSize: "",
           textColor: "",
+          textAlignment: "",
           backgroundColor: "",
           href: "",
         };
@@ -372,6 +382,7 @@ const WebpageOptions = ({
           height: "",
           textSize: "",
           textColor: "",
+          textAlignment: "",
           backgroundColor: "",
           href: "",
         };
@@ -672,9 +683,29 @@ const WebpageOptions = ({
       },
     },
   ];
+  const textAlignmentOptions = [
+    {
+      name: "text-left",
+      callbackFunction: () => {
+        updateProperties("text-alignment", "text-left");
+      },
+    },
+    {
+      name: "text-center",
+      callbackFunction: () => {
+        updateProperties("text-alignment", "text-center");
+      },
+    },
+    {
+      name: "text-right",
+      callbackFunction: () => {
+        updateProperties("text-alignment", "text-right");
+      },
+    },
+  ];
 
   return (
-    <div className="w-[20rem] sticky top-0 right-0 h-screen overflow-y-auto bg-yellow-400 text-black font-mono text-lg">
+    <div className="w-[20rem] sticky top-0 right-0 h-screen overflow-y-auto bg-yellow-400 border-[1px] border-black text-black font-mono text-lg">
       {selectedElement === null ? (
         <ul className="flex flex-col w-full items-center gap-2 p-5">
           <li className="flex justify-end w-full py-2 px-3">
@@ -830,54 +861,58 @@ const WebpageOptions = ({
             <li className="">
               <h2 className="text-lg">Styles</h2>
             </li>
-            <li className="flex flex-col gap-5 w-full">
-              <div className="w-full">
-                <DropdownMenu
-                  type="HTML Elements / Styles"
-                  name="Width (%)"
-                  dropdownOptions={widthOptions}
-                  selectedElement={selectedElement}
-                ></DropdownMenu>
-                <form
-                  className="flex flex-col items-center gap-5"
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    updateProperties("width", widthInput!.current!.value);
-                    widthInput!.current!.value = "";
-                  }}
-                >
-                  <input
-                    ref={widthInput}
-                    className="w-[95%] mt-3 px-2 py-1 bg-white rounded-full outline-none"
-                    type="number"
-                    placeholder="Enter width in pixels"
-                  ></input>
-                </form>
-              </div>
-              <div className="w-full">
-                <DropdownMenu
-                  type="HTML Elements / Styles"
-                  name="Height (%)"
-                  dropdownOptions={heightOptions}
-                  selectedElement={selectedElement}
-                ></DropdownMenu>
-                <form
-                  className="flex flex-col items-center gap-5"
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    updateProperties("height", heightInput!.current!.value);
-                    heightInput!.current!.value = "";
-                  }}
-                >
-                  <input
-                    ref={heightInput}
-                    className="w-[95%] mt-3 px-2 py-1 bg-white rounded-full outline-none"
-                    type="number"
-                    placeholder="Enter height in pixels"
-                  ></input>
-                </form>
-              </div>
-            </li>
+            <div className="w-full">
+              <DropdownMenu
+                type="HTML Elements / Styles"
+                name="Width"
+                dropdownOptions={widthOptions}
+                selectedElement={selectedElement}
+                inputForm={
+                  <form
+                    className="flex flex-col items-center mt-3"
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      updateProperties("width", widthInput!.current!.value);
+                      widthInput!.current!.value = "";
+                    }}
+                  >
+                    <label className="w-full text-left">Width Input</label>
+                    <input
+                      ref={widthInput}
+                      className="w-full px-2 py-1 bg-white rounded-full outline-none"
+                      type="number"
+                      placeholder="Enter width (px)"
+                    ></input>
+                  </form>
+                }
+              ></DropdownMenu>
+            </div>
+            <div className="w-full">
+              <DropdownMenu
+                type="HTML Elements / Styles"
+                name="Height"
+                dropdownOptions={heightOptions}
+                selectedElement={selectedElement}
+                inputForm={
+                  <form
+                    className="flex flex-col items-center mt-3"
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      updateProperties("height", heightInput!.current!.value);
+                      heightInput!.current!.value = "";
+                    }}
+                  >
+                    <label className="w-full text-left">Height Input</label>
+                    <input
+                      ref={heightInput}
+                      className="w-full px-2 py-1 bg-white rounded-full outline-none"
+                      type="number"
+                      placeholder="Enter height (px)"
+                    ></input>
+                  </form>
+                }
+              ></DropdownMenu>
+            </div>
             <DropdownMenu
               type="HTML Elements / Styles"
               name="Display"
@@ -901,11 +936,38 @@ const WebpageOptions = ({
               name={"Text Sizes"}
               dropdownOptions={textSizes}
               selectedElement={selectedElement}
+              inputForm={
+                <form
+                  className="flex flex-col items-center mt-3"
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    updateProperties(
+                      "text-size",
+                      textSizeInput!.current!.value + "px"
+                    );
+                    textSizeInput!.current!.value = "";
+                  }}
+                >
+                  <label className="w-full text-left">Text Size Input</label>
+                  <input
+                    ref={textSizeInput}
+                    className="w-full px-2 py-1 bg-white rounded-full outline-none"
+                    type="number"
+                    placeholder="Enter text size (px)"
+                  ></input>
+                </form>
+              }
             ></DropdownMenu>
             <DropdownMenu
               type="Text Colors"
               name="Text Color"
               dropdownOptions={textColors}
+              selectedElement={selectedElement}
+            ></DropdownMenu>
+            <DropdownMenu
+              type="HTML Elements / Styles"
+              name={"Text Alignment"}
+              dropdownOptions={textAlignmentOptions}
               selectedElement={selectedElement}
             ></DropdownMenu>
             <DropdownMenu
@@ -953,25 +1015,24 @@ const WebpageOptions = ({
                   <h2>Children</h2>
                   <FaChildren fontSize={"1.5rem"}></FaChildren>
                 </div>
-                {selectedElement !== null
-                  ? selectedElement.children.length > 0
-                    ? selectedElement.children.map((child, index) => (
-                        <li
-                          className="max-w-[10rem] mb-1 px-3 py-1 border-2 border-black cursor-pointer text-lg text-nowrap text-ellipsis overflow-hidden"
-                          key={index}
-                          onClick={() => {
-                            setPreviousElements([
-                              ...previousElements!,
-                              selectedElement.id,
-                            ]);
-                            setSelectedElement(child);
-                          }}
-                        >
-                          {"<" + child.element + "/>: " + child.innerText}
-                        </li>
-                      ))
-                    : "No Children"
-                  : null}
+                {selectedElement !== null ? (
+                  selectedElement.children.length > 0 ? (
+                    selectedElement.children.map((child, index) => (
+                      <div
+                        className="max-w-[10rem] mb-1 px-3 py-1 border-2 border-black cursor-pointer text-lg text-nowrap text-ellipsis overflow-hidden"
+                        key={index}
+                        onClick={() => {
+                          setPreviousElements([...previousElements!, child.id]);
+                          setSelectedElement(child);
+                        }}
+                      >
+                        {"<" + child.element + "/>: " + child.innerText}
+                      </div>
+                    ))
+                  ) : (
+                    <div>"No Children"</div>
+                  )
+                ) : null}
               </li>
             </ul>
             <li>

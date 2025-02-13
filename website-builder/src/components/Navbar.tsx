@@ -8,7 +8,7 @@ const Navbar = () => {
   const webpages = useSelector((state: RootState) => state.webpage.webpages);
 
   return (
-    <nav className="w-full max-w-[12rem] sticky top-0 left-0 min-h-screen bg-yellow-400 text-black font-roboto overflow-y-auto">
+    <nav className="w-full max-w-[12rem] sticky top-0 left-0 min-h-screen bg-yellow-400 border-[1px] border-black text-black font-roboto overflow-y-auto">
       <ul className="flex flex-col items-center gap-2 p-5">
         <li className="flex gap-2 items-center">
           <h1 className="text-lg font-bold text-nowrap"><i>Webopolis</i></h1>
@@ -16,13 +16,13 @@ const Navbar = () => {
         </li>
         <li className="my-10">
           <ul className="flex flex-col items-center">
-            <li>
+            <div>
               <NavLink className={"flex items-center gap-2"} to="/">
                 <MdDashboard fontSize={"1.5rem"}></MdDashboard>
                 <h3>Dashboard</h3>
               </NavLink>
-            </li>
-            <li className="flex items-center gap-1 mt-7 mb-3 pb-1 border-b-2 border-neutral-300">
+            </div>
+            <li className="flex items-center gap-1 mt-7 mb-3 pb-1 border-b-2 border-black">
               <h2>Websites</h2>
               <MdComputer></MdComputer>
             </li>
@@ -31,7 +31,7 @@ const Navbar = () => {
                 {webpages.map((webpage, index) =>
                   index < 5 ? (
                     <NavLink to={`/webpage/${webpage.id}`} key={webpage.id}>
-                      <li className={` border-white`}>{webpage.name}</li>
+                      <li className={`max-w-[10rem] text-ellipsis whitespace-nowrap overflow-x-hidden`}>{webpage.name}</li>
                     </NavLink>
                   ) : null
                 )}

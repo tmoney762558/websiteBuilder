@@ -470,7 +470,7 @@ const WebsiteBuilder = () => {
       <Navbar></Navbar>
       <div
         ref={webpageRef}
-        className="flex-1 max-w-full max-h-screen overflow-x-auto overflow-y-auto"
+        className="flex-1 max-w-full h-screen overflow-x-auto overflow-y-auto"
       >
         {
           /* Webpage */

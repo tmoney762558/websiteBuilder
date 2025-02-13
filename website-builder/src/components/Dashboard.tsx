@@ -13,14 +13,14 @@ const Dashboard = () => {
   return (
     <div className="flex">
       <Navbar></Navbar>
-      <div className="flex flex-col flex-grow w-full items-center font-roboto">
+      <div className="flex flex-col flex-grow w-full items-center font-roboto pb-[5rem]">
         <button className="w-full max-w-[15rem] mt-[8.5rem] py-2 rounded-full border-2 border-black text-lg font-bold shadow-md shadow-black">
           <NavLink to={`/webpage/${Date.now()}`} onClick={() => {}}>
             Create New Website
           </NavLink>
         </button>
         <h1 className="mt-[4.25rem] text-4xl font-bold border-b-4 border-black">Your Websites</h1>
-        <div className="grid xl:grid-cols-3 lg:grid-cols-2 grid-cols-1 justify-center gap-7 w-full max-w-[100rem] mt-[5rem] lg:px-10 px-3">
+        <div className="grid xl:grid-cols-3 lg:grid-cols-2 md:grid-cols-2 grid-cols-1 justify-center gap-7 w-full max-w-[100rem] mt-[5rem] lg:px-10 px-3">
           {webpages
             ? webpages.map((webpage) => (
                 <div

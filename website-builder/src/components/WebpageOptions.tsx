@@ -4,11 +4,12 @@ import { DropdownMenu } from "./";
 import { useDispatch, useSelector } from "react-redux";
 import { useState, useEffect, useRef } from "react";
 import { IoMdArrowBack } from "react-icons/io";
-import { FaQuestionCircle, FaRegSave } from "react-icons/fa";
-import { useParams } from "react-router-dom";
+import { FaHome, FaQuestionCircle, FaRegSave } from "react-icons/fa";
+import { NavLink, useParams } from "react-router-dom";
 import { addWebpage, updateWebpage } from "../store/slices/webpageSlice";
 import { RootState } from "../store";
 import { FaChildren } from "react-icons/fa6";
+import { BiChevronLeft } from "react-icons/bi";
 
 interface WebpageElement {
   id: number;
@@ -70,6 +71,8 @@ const WebpageOptions = ({
     currentWebpage ? currentWebpage!.name : "Website"
   );
   const [webpageColor, setWebpageColor] = useState<string>("#FFFFFF");
+
+  const [isOpen, setIsOpen] = useState<boolean>(false);
 
   useEffect(() => {
     if (innerTextInput && innerTextInput.current && selectedElement) {
@@ -704,41 +707,57 @@ const WebpageOptions = ({
     },
   ];
 
-  return (
+  return isOpen ? (
     <div className="w-[20rem] sticky top-0 right-0 h-screen overflow-y-auto bg-yellow-400 border-[1px] border-black text-black font-mono text-lg">
       {selectedElement === null ? (
         <ul className="flex flex-col w-full items-center gap-2 p-5">
-          <li className="flex justify-end w-full py-2 px-3">
-            <FaRegSave
-              className="cursor-pointer"
+          <li className="flex justify-between items-center w-full py-2 px-3">
+            <div
+              className="p-1 bg-black border-2 border-yellow-500 rounded-full"
               onClick={() => {
-                setShowSaveMessage(true);
-                if (doesWebpageExist(currentId)) {
-                  if (webpageName === "") {
-                    alert("Please enter a name for the webpage.");
-                    return;
-                  }
-                  dispatch(
-                    updateWebpage({
-                      id: currentId,
-                      name: webpageName,
-                      webpage: webpageHTML,
-                      color: webpageColor,
-                    })
-                  );
-                } else {
-                  dispatch(
-                    addWebpage({
-                      id: currentId,
-                      name: webpageName,
-                      webpage: webpageHTML,
-                      color: webpageColor,
-                    })
-                  );
-                }
+                setIsOpen(!isOpen);
               }}
-              fontSize={"1.3rem"}
-            ></FaRegSave>
+            >
+              <BiChevronLeft
+                fill="rgb(234 179 8)"
+                fontSize={"1.5rem"}
+              ></BiChevronLeft>
+            </div>
+            <div className="flex  items-center gap-4">
+              <FaRegSave
+                className="cursor-pointer"
+                onClick={() => {
+                  setShowSaveMessage(true);
+                  if (doesWebpageExist(currentId)) {
+                    if (webpageName === "") {
+                      alert("Please enter a name for the webpage.");
+                      return;
+                    }
+                    dispatch(
+                      updateWebpage({
+                        id: currentId,
+                        name: webpageName,
+                        webpage: webpageHTML,
+                        color: webpageColor,
+                      })
+                    );
+                  } else {
+                    dispatch(
+                      addWebpage({
+                        id: currentId,
+                        name: webpageName,
+                        webpage: webpageHTML,
+                        color: webpageColor,
+                      })
+                    );
+                  }
+                }}
+                fontSize={"1.3rem"}
+              ></FaRegSave>
+              <NavLink to="/">
+                <FaHome fontSize={"1.3rem"}></FaHome>
+              </NavLink>
+            </div>
           </li>
           <li className="text-xl">Editor</li>
           <li className="flex flex-col items-center w-full my-5">
@@ -1048,6 +1067,15 @@ const WebpageOptions = ({
           </ul>
         </div>
       )}
+    </div>
+  ) : (
+    <div
+      className="absolute top-5 right-5 p-1 bg-black border-2 border-yellow-500 rounded-full"
+      onClick={() => {
+        setIsOpen(!isOpen);
+      }}
+    >
+      <BiChevronLeft fill="rgb(234 179 8)" fontSize={"1.5rem"}></BiChevronLeft>
     </div>
   );
 };
